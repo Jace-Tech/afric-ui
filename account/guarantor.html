@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   <meta name="description" content="Guarantor form for africneibor">
+     <meta name="author" content="AfricNeibor">
+ <link href="../logo.png" rel="icon">
+  <link href="../logo.png" rel="apple-touch-icon">
+
+    <title>AfricNeibor - GUARANTOR</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/common.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link href="https://fonts.googleapis.com/css?family=Rubik:400,600,700&display=swap" rel="stylesheet">
+<link href="css/theme-05.css" rel="stylesheet">
+<style>
+    @media (min-width: 768px) {
+    .forny-form {
+        width: 50rem;
+    }
+</style>
+<script>
+    const url = window.location.href;
+
+// Parse the URL
+const urlObj = new URL(url);
+
+// Retrieve query parameters
+const tenantId = urlObj.searchParams.get("tenant");
+const tname = urlObj.searchParams.get("name");
+const requestId = urlObj.searchParams.get("requestId");
+</script>
+</head>
+
+<body>
+    <div class="forny-container">
+        
+<div class="forny-inner">
+   
+            <div class="forny-form mt-2">
+                <div>
+                    <h4>GUARANTOR FORM</h4>
+            <p class="mb-10">FILL THIS FORM TO VERIFY YOURSELF AS A GUARANTOR FOR <span id="forname" class="text-danger fw-bolder"></span></p>
+                </div>
+                <form class="row">
+         <div class="form-group col-xl-6 col-md-6 col-lg-6 col-12">
+        <label class="form-label mr-2">Enter your First Name</label>
+    <input required  class="form-control" name="fname" type="text"
+    placeholder="John" id="fname">
+
+    </div>
+     <div class="form-group col-xl-6 col-md-6 col-lg-6 col-12">
+        <label class="form-label mr-2">Enter your Last Name</label>
+    <input required  class="form-control" name="lname" type="text"
+    placeholder="Doe" id="lname">
+
+    </div>
+    <div class="form-group col-xl-6 col-md-6 col-lg-6 col-12">
+        <label class="form-label mr-2">Your Contact Phone Number including country code (eg. +234)</label>
+    <input required  class="form-control" name="phone" type="text"
+    placeholder="+2348190389488" id="phone">
+    
+    </div>
+     <div class="form-group col-xl-6 col-md-6 col-lg-6 col-12">
+        <label class="form-label mr-2">Your Contact Email Address</label>
+    <input required  class="form-control" name="email" type="text"
+    placeholder="xx@gmail.com" id="email">
+
+    </div>
+    
+
+     <div class="form-group col-12">
+        <label class="form-label mr-2">Enter your Residential Address</label>
+    <input required  class="form-control" name="address" type="address"
+    placeholder="" id="address">
+
+    </div>
+     <div class="form-group col-xl-6 col-lg-6 col-md-6 col-12">
+        <label class="form-label mr-2">Where do you currently Work</label>
+    <input required  class="form-control" name="work" type="text"
+    placeholder="" id="work">
+
+    </div>
+     <div class="form-group col-xl-6 col-lg-6 col-md-6 col-12">
+        <label class="form-label mr-2">What is your Average Income per year in USD</label>
+    <input required  class="form-control" name="income" type="number"
+    placeholder="1000" id="income">
+
+    </div>
+    
+     <div class="form-group col-12">
+        <label class="form-label mr-2">What is your Relationship with this Person</label>
+    <input required  class="form-control" name="rel" type="text"
+    placeholder="" id="rel">
+
+    </div>
+    
+   
+
+                    
+   
+
+
+                    <div class="row mt-6 mb-6">
+                        <div class="col-12 d-flex align-items-center">
+                            
+    <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" id="rem">
+        <label class="custom-control-label" for="rem">I agree and confirm myself as a Guarantor for <span id="forname2" class="text-danger fw-bolder"></span> and I stand behind him/her for every property purchased on Africneibor and will make sure all Rent is paid.
+        </label>
+    </div>
+
+                        </div>
+                        
+                    </div>
+
+                    <div class="col-12">
+                        <button type="button" id="send-btn" class="btn btn-primary btn-block">Submit</button>
+                    </div>
+
+    <!--                <div class="mt-10 mb-4 text-center">-->
+    <!--                    <div class="d-block text-center mb-2 text-sm">-->
+    <!--                        or login with-->
+    <!--                    </div>-->
+                        
+    <!--<button type="button" class="btn btn-social btn-block btn-facebook">-->
+    <!--    Facebook-->
+    <!--</button>-->
+
+                        
+    <!--<button type="button" class="btn btn-social btn-block btn-google">-->
+    <!--    Google-->
+    <!--</button>-->
+
+    <!--                </div>-->
+
+                    <div class="mt-10 col-12" style="float:right; text-transform:center">
+                       Visit <a href="https://africneibor.com">Africneibor.com</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+       
+    
+
+    </div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/demo.js"></script>
+    
+    
+    <script> 
+    document.getElementById("forname").innerHTML=tname.toUpperCase();
+     document.getElementById("forname2").innerHTML=tname.toUpperCase();
+    $("#send-btn").on("click", async function (e) {
+        e.preventDefault();
+        var fname = document.getElementById("fname").value;
+        var lname = document.getElementById("lname").value;
+        var email = document.getElementById("email").value;
+        var phone = document.getElementById("phone").value;
+        var address = document.getElementById("address").value;
+        var work = document.getElementById("work").value;
+        var income = document.getElementById("income").value;
+        var rel = document.getElementById("rel").value;
+        var rem = document.getElementById("rem");
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+        
+        if(fname.length == 0){
+            alert("Please enter your First Name");
+            document.getElementById("fname").focus();
+        }
+        else if(lname.length == 0){
+            alert("Please enter your Last Name");
+            document.getElementById("lname").focus();
+        }
+        else if(!(phoneRegex.test(phone))){
+            alert("Invalid Phone Number! Please enter a valid Contact Number");
+            document.getElementById("phone").focus();
+        }
+        else if(!(emailRegex.test(email))){
+            alert("Invalid email Address! Please enter a valid Email");
+            document.getElementById("email").focus();
+        }
+        
+        else if(address.length == 0){
+            alert("Please enter your Resident Address");
+            document.getElementById("address").focus();
+        }
+       
+        else if(work.length == 0){
+            alert("Please enter your Current Place of Works");
+            document.getElementById("work").focus();
+        }
+        else if(income.length == 0){
+            alert("Please enter the Average Amount you earn per year");
+            document.getElementById("income").focus();
+        }
+        else if(rel.length == 0){
+            alert("Please enter your Relationship with this Person");
+            document.getElementById("rel").focus();
+        }
+        else if(!(rem.checked)){
+            alert("Check the button to confirm you agree with us");
+            document.getElementById("rem").focus();
+        }
+        
+        else{
+            document.getElementById("send-btn").innerHTML="Sending...";
+            document.getElementById("send-btn").setAttribute("disabled", "disabled");
+            var fullname = fname+" "+lname
+        
+            var formdata = new FormData();
+            formdata.append("email", email);
+             formdata.append("phone", phone);
+              formdata.append("address", address);
+               formdata.append("placeOfWork", work);
+                formdata.append("averageIncome", income);
+                 formdata.append("relationship", rel);
+                  formdata.append("howYouKnewTenant", rel);
+             formdata.append("name", fullname);
+             formdata.append("isResponsible", true);
+             formdata.append("requestId", requestId);
+    
+            var requestOptions = {
+                method: 'POST',
+                body: formdata,
+                redirect: 'follow'
+                
+            };
+    
+            await fetch("https://africneighbour.onrender.com/api/v1/guarantor/store", requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result);
+                if(result.status == true){
+            
+                    
+                     Swal.fire({
+                        title: "Thank You! " + fname,
+                        text: "The Admin will Review your submission and contact you if we need further details from you! we will also let you know if we approve you",
+                        icon: "success"
+                    });
+                     
+                }
+                else{
+                     Swal.fire({
+                        title: "Failed!",
+                        text: result.message,
+                        icon: "error"
+                    });
+                }
+                
+                
+                
+            })
+            .catch(error => console.log('error', error));
+            document.getElementById("send-btn").innerHTML="Submit";
+                document.getElementById("send-btn").removeAttribute("disabled");
+        }
+    });
+    </script>
+    <!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/65f7504ccc1376635adb9597/1hp713c11';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
+</body>
+
+</html>

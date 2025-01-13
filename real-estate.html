@@ -1,0 +1,596 @@
+ <!DOCTYPE HTML>
+<html lang="en-US">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Find your Dream Property</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Explore our list of verified and trusted properties. Rent a safe apartment for yourself">
+	 <meta  name="keywords" content="AfricNeibor, africneibor, property management, lease management, tenant management, property ownership, data collection, landlords, tenants">
+	 <meta name="author" content="AfricNeibor">
+
+	<!-- Favicon -->
+	<link rel="icon" type="image/png" sizes="56x56" href="logo.png">
+	<!-- bootstrap CSS -->
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css" type="text/css" media="all">
+	<!-- carousel CSS -->
+	<link rel="stylesheet" href="assets/css/owl.carousel.min.css" type="text/css" media="all">
+	<!-- animate CSS -->
+	<link rel="stylesheet" href="assets/css/animate.css" type="text/css" media="all">
+	<!-- font-awesome CSS -->
+	<link rel="stylesheet" href="assets/css/all.min.css" type="text/css" media="all">
+	<!-- font-flaticon CSS -->
+	<link rel="stylesheet" href="assets/css/flaticon.css" type="text/css" media="all">
+	<!-- theme-default CSS -->
+	<link rel="stylesheet" href="assets/css/theme-default.css" type="text/css" media="all">
+	<!-- meanmenu CSS -->
+	<link rel="stylesheet" href="assets/css/meanmenu.min.css" type="text/css" media="all">
+	<!-- transitions CSS -->
+	<link rel="stylesheet" href="assets/css/owl.transitions.css" type="text/css" media="all">
+	<!-- venobox CSS -->
+	<link rel="stylesheet" href="venobox/venobox.css" type="text/css" media="all">
+	<!-- bootstrap icons -->
+	<link rel="stylesheet" href="assets/css/bootstrap-icons.css" type="text/css" media="all">
+	<!-- Slick Slider -->
+	<link rel="stylesheet" type="text/css" href="assets/slick/slick.css">
+	<link rel="stylesheet" type="text/css" href="assets/slick/slick-theme.css">
+	<!-- Main Style CSS -->
+	<link rel="stylesheet" href="assets/css/style.css" type="text/css" media="all">
+	<!-- Dropdown CSS -->
+	<link rel="stylesheet" href="assets/css/dropdown.css" type="text/css" media="all">
+	<!-- responsive CSS -->
+	<link rel="stylesheet" href="assets/css/responsive.css" type="text/css" media="all">
+	<!-- modernizr js -->
+	<script src="assets/js/vendor/modernizr-3.5.0.min.js"></script>
+</head>
+
+<body>
+	<!-- loder -->
+	<div class="loader-wrapper">
+		<div class="loader-wrap">
+			<div class="preloader">
+				<div id="shifa-preloader" class="shifa-preloader">
+					<div class="layer layer-one"><span class="overlay"></span></div>
+					<div class="animation-preloader">
+						<div class="spinner"><!-- <img src="logo.png"> --></div>
+						<div class="txt-loading">
+							<span data-text-preloader="A" class="letters-loading">
+								A
+							</span>
+							<span data-text-preloader="F" class="letters-loading">
+								F
+							</span>
+							<span data-text-preloader="R" class="letters-loading">
+								R
+							</span>
+							<span data-text-preloader="I" class="letters-loading">
+								I
+							</span>
+							<span data-text-preloader="C" class="letters-loading">
+								C
+							</span>
+							<span data-text-preloader="N" class="letters-loading">
+								N
+							</span>
+							<span data-text-preloader="E" class="letters-loading">
+								E
+							</span>
+							<span data-text-preloader="I" class="letters-loading">
+								I
+							</span>
+							<span data-text-preloader="B" class="letters-loading">
+								B
+							</span>
+							<span data-text-preloader="O" class="letters-loading">
+								O
+							</span>
+							<span data-text-preloader="R" class="letters-loading">
+								R
+							</span>
+						</div>
+					</div>  
+				</div>
+			</div>
+		</div>
+		<div class="loader"></div>
+		<div class="loder-section left-section"></div>
+		<div class="loder-section right-section"></div>
+	</div>
+
+	<!--==================================================-->
+	<!-- Start Header Area -->
+	<!--==================================================-->
+	<header class="header-area" id="sticky-header">
+		<div class="container">
+			<div class="row align-items-center">
+				<div class="col-lg-2">
+					<div class="logo">
+						<a href="index"><img src="logo.png" alt="africneibor logo" width="100" height="80"></a>
+					</div>
+				</div>
+				<div class="col-lg-10">
+					<div class="header-menu">
+						<ul>
+							<li><a href="index">Home</a></li>
+							<li><a href="about">About Us</a></li>
+							<li><a href="services">Services </a>
+							</li>
+							<li><a href="faq">FAQ </a></li>
+							<li><a href="real-estate">Real Estate</a></li>
+							
+							
+							<li><a href="contact">Contact Us</a></li>
+						</ul>
+						<div class="header-right">
+							<div class="Lifesafe-btn">
+								<a href="account/signup-email" id="register">Register</a>
+							</div>
+							
+							<div class="Lifesafe-btn" style="margin-left: 4%;">
+								<a href="account/login" id="login">Login</a>
+							</div>
+							<div class="header-sidebar">
+								<a class="navSidebar-button" href="#"><i class="bi bi-grid-3x3-gap-fill"></i></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+<script>
+    var user_id = sessionStorage.getItem("user_id");
+        var role = sessionStorage.getItem("role");
+        var is_active = localStorage.getItem("is_active");
+        var bearer = sessionStorage.getItem("bearer_token");
+        const ADMIN_TOKEN = bearer;
+        if((user_id == null) || (user_id.length == 0)){
+            document.getElementById("login").innerHTML="Login";
+            document.getElementById("login").setAttribute("href","account/login");
+             document.getElementById("register").innerHTML="Register";
+                document.getElementById("register").setAttribute("href","account/signup-email");
+        }
+        else{
+            document.getElementById("login").innerHTML="Logout";
+            document.getElementById("login").setAttribute("href","account/logout");
+            if(role == "tenant"){
+                document.getElementById("register").innerHTML="Dashboard";
+                document.getElementById("register").setAttribute("href","account/tenant");
+            }
+            else if(role == "landlord"){
+                 document.getElementById("register").innerHTML="Dashboard";
+                document.getElementById("register").setAttribute("href","account/landlord");
+            }
+            else if(role == "admin"){
+                 document.getElementById("register").innerHTML="Admin Dashboard";
+                document.getElementById("register").setAttribute("href","account/admin");
+            }
+        }
+</script>
+	<!-- Lifesafe Mobile Menu Area -->
+	<div class="mobile-menu-area sticky-menu" id="navbar">
+		<div class="mobile-menu">
+			<div class="mobile-logo">
+				<a href="index"><img src="logo.png" alt="africneibor logo" width="100" height="90"></a>
+			</div>
+			<div class="side-menu-info">
+				<div class="sidebar-menu">
+					<a class="navSidebar-button" href="#"><i class="bi bi-justify-right"></i></a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--==================================================-->
+	<!-- End Header Area -->
+	<!--==================================================-->
+ 
+<div class="blog-area inner-page">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="section-title text-center wow fadeInUp" data-wow-delay="0.2s" data-wow-duration="1s">
+                    <div class="section-sub-title">
+                        <h4>Find Your Dream Property</h4>
+                    </div>
+                    <div class="section-main-title">
+                        <h2>Latest Listings & Updates</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="properties_show_div">
+            <!-- Properties will be dynamically injected here -->
+        </div>
+    </div>
+</div>
+
+<script src=
+"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+<script>
+const base_url = "https://africneighbour.onrender.com/api";
+        var user_id = sessionStorage.getItem("user_id");
+        var role = sessionStorage.getItem("role");
+
+async function fetchProperties() {
+    const requestOptions = {
+        method: 'GET',
+    };
+
+    await fetch(base_url + "/v1/property", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            const propertiesDiv = document.getElementById("properties_show_div");
+            const properties = Object.values(result.data); // Store properties
+          
+
+            // Clear previous properties (if any)
+            propertiesDiv.innerHTML = "";
+            console.log(properties);
+
+            // Dynamically create property cards
+            properties.forEach(property => {
+                  if(property.is_verified){
+                const propertyCard = `
+                   <div class="col-lg-4 col-md-6">
+					<div class="blog-single-box wow fadeInUp" data-wow-delay="0.6s" data-wow-duration="1s">
+						<div class="blog-content">
+							<div class="blog-month">
+								<span>$${property.price_range.from} -</span>
+								<span>$${property.price_range.to}</span>
+                                </div>
+                                <div class="blog-text">
+                                    <h4><a href="#">${property.property_name}</a></h4>
+                                    <p>${property.no_of_rooms} Rooms, located at ${property.address}, <span>${property.state}</span>, ${property.country}</p>
+                                    <p style="font-weight:bolder;">Type: <span style="color:green;">${property.property_type}</span></p>
+                                </div>
+                            </div>
+                            <div class="blog-thumb">
+                                <img src="${property.property_image}" alt="${property.property_name}" style="width:100%; height: 200px; object-fit:cover">
+                            </div>
+                            <div class="text-sm form-box-button">
+												<button type="button" class="btn-primary btn" onclick='rent_property("${property.id}", "${property.landlord.user_id}", this);'>Rent property</button>
+												 </div>
+                        </div>
+                    </div>
+                `;
+                propertiesDiv.insertAdjacentHTML("beforeend", propertyCard);
+                  }
+            });
+        })
+        .catch(error => {
+            console.error("Error fetching properties:", error);
+        });
+}
+
+// Call the function to load properties on page load
+document.addEventListener("DOMContentLoaded", fetchProperties);
+
+async function rent_property(propertyID, landlord_id, btn){
+    var user_id = sessionStorage.getItem("user_id");
+        var role = sessionStorage.getItem("role");
+        var is_active = localStorage.getItem("is_active");
+        var bearer = sessionStorage.getItem("bearer_token");
+        const ADMIN_TOKEN = bearer;
+        if((user_id == null) || (user_id.length == 0)){
+            localStorage.setItem("page", "real-estate");
+           window.location.href="account/login"; 
+        }
+        else{
+            if(!is_active){
+                 Swal.fire({
+                        title: "OOP!",
+                        text: "Your request to rent this property was not successful because your Account with africneibor is not ACTIVE! contact the Admin if you feel this is a mistake",
+                        icon: "error"
+                    });
+            }
+            else{
+                 btn.innerHTML="Requesting...";
+                btn.setAttribute("disabled", "disabled");
+                
+                const payload = {
+                            "propertyId": propertyID,
+                            "landlordUserId": landlord_id,
+                            "userId": user_id
+                        };
+                        var requestOptions = {
+                          method: 'POST',
+                          body: JSON.stringify(payload),
+                          headers: {
+                            "Authorization": `Bearer ${ADMIN_TOKEN}`,
+                            "Content-Type": "application/json"
+                          },
+                          redirect: 'follow'
+                        };
+                         
+                        await fetch(base_url+"/v1/property-interest/", requestOptions)
+                          .then(response => response.json())
+                          .then(result => {
+                              if(result.status == true){
+                                    Swal.fire({
+                                    title: "Successful",
+                                    text: "Your request to rent this property has been sent, we will contact you soon if we need more details from you!",
+                                    icon: "success"
+                                });
+                              }
+                             
+                                else{
+                                    Swal.fire({
+                                        title: "Failed!",
+                                        text: "Error Requesting to rent property, please try again or contact our support!",
+                                        icon: "error"
+                                    });
+                                }
+                              
+                          })
+                          .catch(error => console.log('error', error));
+                          btn.innerHTML="Rent Property";
+                          btn.removeAttribute("disabled");
+                    }
+                    
+          
+            }
+        }
+
+ </script>
+<!--==================================================-->
+	<!-- Start Sidebar Area -->
+	<!--==================================================-->
+	<div class="sidebar-group info-group">
+		<div class="sidebar-widget">
+			<div class="sidebar-widget-container">
+				<div class="widget-heading">
+					<a href="#" class="close-side-widget">
+						<i class="bi bi-x-lg"></i>
+					</a>
+				</div>
+				<div class="sidebar-textwidget">
+					<div class="sidebar-info-contents">
+						<div class="content-inner">
+							<div class="sidebar-logo">
+								<a href="index"><img src="logo.png" alt="africneibor logo" height="150"></a>
+							</div>
+							<div class="sidebar-widget-menu">
+								<ul>
+									<li class="dropdown"><a href="index" data-toggle="dropdown">Home</a>
+										
+									</li>
+									<li class="dropdown"><a href="about" data-toggle="dropdown">About Us</a></li>
+									<li class="dropdown"><a href="services" data-toggle="dropdown">Our Services <i
+												class="icon-arrow"></i></a>
+										<ul class="dropdown-menu">
+											<li><a href="services">Tenant Management</a></li>
+											<li><a href="services">Lease Management</a></li>
+											<li><a href="services">Maintenance Requests</a></li>
+											<li><a href="services">Secure Document Storage</a></li>
+											<li><a href="services">Facial Recognition for Enhanced Security</a></li>
+											<li><a href="services">Background Checks for Peace of Mind</a></li>
+
+											
+										</ul>
+									</li>
+									<li class="dropdown"><a href="contact" data-toggle="dropdown">Contact us</a></li>
+									<li class="dropdown"><a href="account/signup-email" data-toggle="dropdown">Register with us</a>
+										
+									</li>
+									<li class="dropdown"><a href="account/login" data-toggle="dropdown">Login</a>
+										
+									</li>
+								</ul>
+							</div>
+							<div class="contact-info">
+								<h2>Contact Info</h2>
+								<ul class="list-style-one">
+									<li><i class="bi bi-geo-alt-fill"></i> Abington street 
+Northampton, NN1 2AJ,
+England. </li>
+									<li><i class="bi bi-telephone-fill"></i>(+44) 783-9190-193</li>
+									<li><i class="bi bi-envelope"></i> info@africneibor.com</li>
+									
+								</ul>
+							</div>
+							<ul class="social-box">
+								<li class="facebook"><a href="#" class="fab fa-facebook-f"></a></li>
+								<li class="twitter"><a href="#" class="fab fa-instagram"></a></li>
+								<li class="linkedin"><a href="#" class="fab fa-twitter"></a></li>
+								<li class="instagram"><a href="#" class="fab fa-pinterest-p"></a></li>
+								<li class="youtube"><a href="#" class="fab fa-linkedin-in"></a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--==================================================-->
+	<!-- End Sidebar Area -->
+	<!--==================================================-->
+	<!--==================================================-->
+	<!-- Start Footer Area -->
+	<!--==================================================-->
+	<div class="footer-area">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-3 col-md-6">
+					<div class="footer-wiget wow fadeInUp" data-wow-delay="0.2s" data-wow-duration="1s">
+						<div class="footer-wiget-title">
+							<h4>Quick link</h4>
+						</div>
+						<div class="footer-wiget-menu">
+							<ul>
+								<li><a href="index">Home</a></li>
+								<li><a href="about">About Us</a></li>
+								<li><a href="faq">FAQ</a></li>
+								<li><a href="services">Our Services</a></li>
+								<li><a href="contact">Contact Us</a></li>
+								<li><a href="account/signup-email">Register with us</a></li>
+								<li><a href="account/login">Login</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-5 col-md-6">
+					<div class="footer-wiget inner2 wow fadeInUp" data-wow-delay="0.4s" data-wow-duration="1s">
+						<div class="footer-wiget-title">
+							<h4>Our Services</h4>
+						</div>
+						<div class="footer-wiget-menu">
+							<ul>
+								<li><a href="services">Tenant Management</a></li>
+								<li><a href="services">Lease Management</a></li>
+								<li><a href="services">Maintenance Requests</a></li>
+								<li><a href="services">Background Checks for Peace of Mind</a></li>
+								<li><a href="services">Facial Recognition for Enhanced Security</a></li>
+								<li><a href="services">Secure Document Storage</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-6">
+					<div class="footer-wiget inner">
+						<div class="footer-wiget-logo">
+							<a href="index"><img src="logo.png" alt="africneibor" width="120" height="100"></a>
+						</div>
+						<div class="footer-wiget-text">
+							<h4>At AfricNeibor, our mission is<br> to empower property owners 
+							to take control of their rental properties,<br> enhance tenant satisfaction, and maximize profitability.</h4>
+						</div>
+						<div class="footer-social">
+							<ul>
+								<li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+								<li><a href="#"><i class="fab fa-twitter"></i></a></li>
+								<li><a href="#"><i class="fab fa-vimeo-v"></i></a></li>
+								<li><a href="#"><i class="fab fa-instagram"></i></a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	<!--==================================================-->
+	<!-- End Footer Area -->
+	<!--==================================================-->
+
+	<!--==================================================-->
+	<!-- Start Serch Pop Up section Area -->
+	<!--==================================================-->
+	<!-- serch pop up section -->
+	<div class="search-popup">
+		<button class="close-search style-two"><span class="flaticon-multiply"><i class="far fa-times-circle"></i></span></button>
+		<button class="close-search"><i class="fas fa-arrow-up"></i></button>
+		<form method="post" action="#">
+			<div class="form-group">
+				<input type="search" name="search-field" value="" placeholder="Search Here" required="">
+				<button type="submit"><i class="fa fa-search"></i></button>
+			</div>
+		</form>
+	</div>
+	<!--==================================================-->
+	<!-- End Serch Pop Up  section Area -->
+	<!--==================================================-->
+
+
+	<!--==================================================-->
+	<!-- Start scrollup section Area -->
+	<!--==================================================-->
+	<!-- scrollup section -->
+	<div class="prgoress_scrollup">
+		<svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+			<path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" />
+		</svg>
+	</div>
+	<!--==================================================-->
+	<!-- End scrollup section Area -->
+	<!--==================================================-->
+	
+	
+		
+    <script>
+        //   RESTART SERVER TO PREVENT SLOW RESPONSE
+        fetch("https://africneighbour.onrender.com/api/")
+            .then(res => res.json())
+            .catch(err => console.log("ERROR:", err.message))
+    </script>
+
+
+	<!-- jquery js -->
+	<script src="assets/js/vendor/jquery-3.6.2.min.js"></script>
+
+	<script src="assets/js/popper.min.js"></script>
+
+	<!-- bootstrap js -->
+	<script src="assets/js/bootstrap.min.js"></script>
+
+	<!-- carousel js -->
+	<script src="assets/js/owl.carousel.min.js"></script>
+
+	<!-- counterup js -->
+	<script src="assets/js/jquery.counterup.min.js"></script>
+
+	<!-- waypoints js -->
+	<script src="assets/js/waypoints.min.js"></script>
+
+	<!-- wow js -->
+	<script src="assets/js/wow.min.js"></script>
+
+	<!-- imagesloaded js -->
+	<script src="assets/js/imagesloaded.pkgd.min.js"></script>
+
+	<!-- venobox js -->
+	<script src="venobox/venobox.js"></script>
+
+	<!--  animated-text js -->
+	<script src="assets/js/animated-text.js"></script>
+
+	<!-- venobox min js -->
+	<script src="venobox/venobox.min.js"></script>
+
+	<!-- isotope js -->
+	<script src="assets/js/isotope.pkgd.min.js"></script>
+
+	<!-- jquery meanmenu js -->
+	<script src="assets/js/jquery.meanmenu.js"></script>
+
+	<!-- jquery scrollup js -->
+	<script src="assets/js/jquery.scrollUp.js"></script>
+
+	<!-- Slick Slider -->
+	<script src="assets/slick/slick.min.js"></script>
+
+	<script src="assets/js/jquery.barfiller.js"></script>
+	<!-- jquery js -->
+
+	<!-- ragrslider js -->
+	<script src="assets/js/rangeslider.js"></script>
+
+	<!-- ragrslider js -->
+	<script src="assets/js/mixitup.min.js"></script>
+
+	<!-- theme js -->
+	<script src="assets/js/theme.js"></script>
+
+	<!-- scroll js -->
+	<script src="assets/js/script.js"></script>
+	<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/65f7504ccc1376635adb9597/1hp713c11';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
+
+</body>
+
+</html>

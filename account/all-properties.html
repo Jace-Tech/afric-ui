@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Listings</title>
+    <link href="../logo.png" rel="icon">
+        <link href="../logo.png" rel="apple-touch-icon">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Explore the life changing services that AfricNeibor offers. Manage your tenants and properties in one place!">
+        <meta  name="keywords" content="AfricNeibor, africneibor, property management, lease management, tenant management, property ownership, data collection, landlords, tenants">
+        <meta name="author" content="adricneibor">
+    <!-- Bootstrap CSS -->
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+    
+    <!-- Custom CSS for the property cards -->
+    <style>
+        .navbar-brand img {
+            width: 70px; /* Adjust width to make the logo smaller */
+            margin-right: 15px; /* Bring logo inside */
+        }
+        .property-card {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .property-card:hover {
+            transform: scale(1.02);
+        }
+        .verified-badge {
+            background-color: #28a745;
+            color: white; 
+            padding: 0.2em 0.4em;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        .not-verified-badge {
+            background-color: #dc3545;
+            color: white;
+            padding: 0.2em 0.4em;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        .pim{
+            height:100px;
+        }
+    </style>
+     <script>
+        const base_url = "https://africneighbour.onrender.com/api";
+        var admin_id = sessionStorage.getItem("admin_id");
+        var bearer = sessionStorage.getItem("bearer_token");
+        var role = sessionStorage.getItem("role");
+        const ADMIN_TOKEN = bearer;
+                          
+        if(role != "admin" || admin_id == null){
+           window.location.href = "admin-login";
+        }
+        
+        // Function to verify or unverify property
+        async function togglePropertyVerification(propertyId, isVerified) {
+            const raw = JSON.stringify({
+                isVerified: !isVerified // Toggle the status
+            });
+            
+            const requestOptions = {
+                method: 'PATCH',
+                headers: {
+                    "Authorization": `Bearer ${ADMIN_TOKEN}`,
+                    "Content-Type": "application/json"
+                },
+                body: raw,
+            };
+
+            await fetch(`${base_url}/v1/property/${propertyId}/status`, requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    console.log(result);
+                    Swal.fire({
+                        title: 'Success',
+                        text: `Property has been ${!isVerified ? 'verified' : 'unapproved'}.`,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // Reload properties to reflect changes
+                        fetchProperties();
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Failed to update property status',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                });
+        }
+    </script>
+</head>
+<body>
+<!-- Top Navigation Bar with Logo -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <!-- Logo -->
+            <a class="navbar-brand" href="../"> 
+                <img alt="africneibor - logo" src="../logo.png">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <!-- Home Button -->
+                    <li class="nav-item">
+                        <a class="btn btn-primary me-2" href="../">Home</a>
+                    </li>
+                    <!-- Return to Dashboard Button -->
+                    <li class="nav-item">
+                        <a class="btn btn-success" style="cursor:pointer" onclick="dashboard();">Return to Dashboard</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+<div class="container mt-5">
+    <h2 class="mb-4">Property Listings</h2>
+
+    <!-- Property Count -->
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <div>Total Properties: <span id="num_prop"></span></div>
+        </div>
+        <div class="col-md-4">
+            <div>Verified Properties: <span id="num_ver_prop"></span></div>
+        </div>
+    </div>
+
+    <!-- Properties Cards in a table -->
+    <table id="propertyTable" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Details</th>
+                <th>Location</th>
+                <th>Landlord</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="properties_show_div">
+            <!-- Property cards will be injected here dynamically -->
+        </tbody>
+    </table>
+
+    <!-- Modal for Landlord Details -->
+    <div class="modal fade" id="landlordModal" tabindex="-1" role="dialog" aria-labelledby="landlordModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="landlordModalLabel">Landlord Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="landlordName"></p>
+                    <p id="landlordPhone"></p>
+                    <p id="landlordEmail"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap and DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+<script>
+let properties = [];
+    // Fetch properties and populate table
+    async function fetchProperties() {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                "Authorization": `Bearer ${ADMIN_TOKEN}`
+            },
+        };
+
+        await fetch(base_url + "/v1/property", requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                var propertiesDiv = document.getElementById("properties_show_div");
+                properties = Object.values(result.data); // Store properties globally
+                var count = 0;
+                var ver_prop_count = 0;
+                console.log(properties);
+
+                // Clear previous content
+                propertiesDiv.innerHTML = '';
+
+                if (properties.length === 0) {
+                    propertiesDiv.innerHTML = `<tr><td colspan="4" class="text-center">No properties added yet</td></tr>`;
+                } else {
+                    properties.forEach((property, index) => {
+                        count++;
+                        if (property.is_verified) ver_prop_count++;
+
+                        const isVerified = property.is_verified
+                            ? `<span class="verified-badge">Verified</span>`
+                            : `<span class="not-verified-badge">Not Verified</span>`;
+
+                        const actionButton = property.is_verified
+                            ? `<button class="btn btn-warning" onclick="togglePropertyVerification('${property.id}', true)">Unapprove</button>`
+                            : `<button class="btn btn-success" onclick="togglePropertyVerification('${property.id}', false)">Verify</button>`;
+
+                        const propertyRow = `
+                            <tr>
+                                <td>
+                                    <div class="card property-card">
+                                        <img src="${property.property_image}" class="card-img-top pim" alt="${property.property_name} - africneibor">
+                                        
+                                    </div>
+                                </td>
+                                <td>
+                                <div class="card property-card">
+                                       
+                                        <div class="card-body">
+                                            <h5 class="card-title">${property.property_name} ${isVerified}</h5>
+                                            <p class="card-text">Price: $${property.price_range.from} - $${property.price_range.to}</p>
+                                            <p class="card-text">Rooms: ${property.no_of_rooms}</p>
+                                            <p class="card-text">Type: ${property.property_type} | Color: ${property.color_of_building}</p>
+                                        </div>
+                                    </div>
+                                    </td>
+                                <td>${property.address} (${property.state}, ${property.country})</td>
+                                <td>
+                                    <button class="btn btn-info" onclick="showLandlord(${index})">Landlord Info</button>
+                                </td>
+                                <td>
+                                    ${actionButton}
+                                </td>
+                            </tr>
+                        `;
+                        propertiesDiv.innerHTML += propertyRow;
+                    });
+                }
+
+                // Update counts
+                document.getElementById("num_prop").textContent = count;
+                document.getElementById("num_ver_prop").textContent = ver_prop_count;
+
+                // Initialize DataTables
+                $('#propertyTable').DataTable();
+            })
+            .catch(error => console.log('Error:', error));
+    }
+
+    function showLandlord(index) {
+        const property = properties[index]; // Access property using the index
+        const landlord = property.landlord;
+
+        document.getElementById('landlordName').textContent = `BName: ${landlord.business_name}`;
+        document.getElementById('landlordPhone').textContent = `Phone: ${landlord.phone}`;
+        document.getElementById('landlordEmail').textContent = `Email: ${landlord.email}`;
+
+        // Show modal
+        $('#landlordModal').modal('show');
+    }
+    
+    function dashboard(){
+         window.location.href = "admin";
+    }
+
+    // Initialize properties on page load
+    window.onload = fetchProperties;
+</script>
+</body>
+</html>

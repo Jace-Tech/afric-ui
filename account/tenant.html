@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+
+<html lang="en" class="light">
+    <!-- BEGIN: Head -->
+    <head>
+        <meta charset="utf-8">
+        <link href="../logo.png" rel="icon">
+        <link href="../logo.png" rel="apple-touch-icon">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Explore the life changing services that AfricNeibor offers. Manage your tenants and properties in one place!">
+        <meta  name="keywords" content="AfricNeibor, africneibor, property management, lease management, tenant management, property ownership, data collection, landlords, tenants">
+        <meta name="author" content="adricneibor">
+        <title>Tenant Dashboard - AfricNeibor</title>
+        <!-- BEGIN: CSS Assets-->
+        <link rel="stylesheet" href="dist/css/app.css" />
+        <!-- END: CSS Assets-->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+        <script>
+        const base_url = "https://africneighbour.onrender.com/api";
+        var user_id = sessionStorage.getItem("user_id");
+        var role = sessionStorage.getItem("role");
+        var a_status = sessionStorage.getItem("a_status");
+        var bearer = sessionStorage.getItem("bearer_token");
+        const ADMIN_TOKEN = bearer;
+          
+        const user_details = {
+            "user_id": user_id
+        };
+        
+         if((user_id == null) || (user_id.length == 0) || (bearer.length == 0)){
+           window.location.href = "login";
+           }
+        
+      
+       </script> 
+       <style>
+       
+     .progress-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: conic-gradient(#ff6f61 calc(var(--percent, 0) * 1%), #f0f0f0 0);
+        }
+        .progress-circle-inner {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .progress-circle-inner h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: #ff6f61;
+        }
+        .time-text {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .time-text span {
+            display: block;
+            font-size: 1.2em;
+        }
+       </style>
+    </head>
+    <!-- END: Head -->
+    
+    <body class="py-5 md:py-0 bg-black/[0.15] dark:bg-transparent">
+        <!-- BEGIN: Mobile Menu -->
+        <div class="mobile-menu md:hidden">
+            <div class="mobile-menu-bar">
+                <a href="" class="flex mr-auto">
+                    <img alt="africneibor - logo" class="w-20" src="../logo.png">
+                </a>
+                <a href="javascript:;" class="mobile-menu-toggler"> <i data-lucide="bar-chart-2" class="w-8 h-8 text-white transform -rotate-90"></i> </a>
+            </div>
+            <div class="scrollable">
+                <a href="javascript:;" class="mobile-menu-toggler"> <i data-lucide="x-circle" class="w-8 h-8 text-white transform -rotate-90"></i> </a>
+                <ul class="scrollable__content py-2">
+                    
+                   
+                    
+                   <li>
+                        <a style="cursor:pointer" onclick="dashboard();" class="menu">
+                            <div class="menu__icon"> <i data-lucide="home"></i> </div>
+                            <div class="menu__title">Dashboard </div>
+                        </a>
+                    </li>
+                   <li>
+                        <a style="cursor:pointer" onclick="subscriptions();" class="menu">
+                            <div class="menu__icon"> <i data-lucide="credit-card"></i> </div>
+                            <div class="menu__title">Your Subscriptions </div>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="menu__devider my-6"></li>
+                    
+                   
+                    
+                     <li>
+                        <a href="../real-estate" class="menu">
+                            <div class="-menu__icon"> <i data-lucide="activity"></i> </div>
+                            <div class="menu__title"> Find a Home </div> 
+                        </a>
+                    </li>  
+                   
+                         <li class="menu__devider my-6"></li>
+                          <li>
+                        <a style="cursor:pointer" onclick="profile();" class="menu">
+                            <div class="menu__icon"> <i data-lucide="user"></i> </div>
+                            <div class="menu__title">All Landlords</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="tenant-signup" class="menu">
+                            <div class="menu__icon"> <i data-lucide="user"></i> </div>
+                            <div class="menu__title"> Edit Profile</div>
+                        </a>
+                    </li>
+                            
+                           
+                            <li>
+                                <a style="cursor:pointer" onclick="logout();" class="menu">
+                                    <div class="menu__icon"> <i data-lucide="user"></i> </div>
+                                    <div class="menu__title"> Logout </div>
+                                </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END: Mobile Menu -->
+        <div class="flex mt-[4.7rem] md:mt-0 overflow-hidden">
+            <!-- BEGIN: Side Menu -->
+            <nav class="side-nav">
+                <a href="" class="intro-x flex items-center pl-5 pt-4 mt-3">
+                    <img alt="africneibor - logo" class="w-20" src="../logo.png">
+                </a>
+                <div class="side-nav__devider my-6"></div>
+                <ul>
+                    <li>
+                        <a style="cursor:pointer" onclick="dashboard();" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="home"></i> </div>
+                            <div class="side-menu__title">Dashboard </div>
+                        </a>
+                    </li>
+                   <li>
+                        <a style="cursor:pointer" onclick="subscriptions();" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="credit-card"></i> </div>
+                            <div class="side-menu__title">Your Subscriptions </div>
+                        </a>
+                    </li>
+                   
+                   
+                    <li class="side-nav__devider my-6"></li>
+                
+                  
+                   
+                      
+                          <li>
+                        <a href="../real-estate" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                            <div class="side-menu__title"> Find a Home </div>
+                        </a>
+                    </li>  
+                           
+                           
+                            <li class="side-nav__devider my-6"></li>
+                          <li>
+                        <a href="tenant-signup" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="user"></i> </div>
+                            <div class="side-menu__title"> Edit Profile </div>
+                        </a>
+                    </li>
+                            
+                           
+                             <li>
+                        <a style="cursor:pointer" onclick="logout();" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="user"></i> </div>
+                            <div class="side-menu__title"> Logout </div>
+                        </a>
+                    </li>
+                   
+                </ul>
+            </nav>
+            <!-- END: Side Menu -->
+            <!-- BEGIN: Content -->
+            <div class="content">
+                <!-- BEGIN: Top Bar -->
+                <div class="top-bar -mx-4 px-4 md:mx-0 md:px-0">
+                    <!-- BEGIN: Breadcrumb -->
+                    <nav aria-label="breadcrumb" class="-intro-x mr-auto hidden sm:flex">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="https://africneibor.com">AfricNeibor</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                        </ol>
+                    </nav>
+                    <!-- END: Breadcrumb -->
+                    <!-- BEGIN: Search -->
+                    <!--<div class="intro-x relative mr-3 sm:mr-6">-->
+                    <!--    <div class="search hidden sm:block">-->
+                    <!--        <input type="text" class="search__input form-control border-transparent" placeholder="Search...">-->
+                    <!--        <i data-lucide="search" class="search__icon dark:text-slate-500"></i> -->
+                    <!--    </div>-->
+                    <!--    <a class="notification sm:hidden" href=""> <i data-lucide="search" class="notification__icon dark:text-slate-500"></i> </a>-->
+                    <!--    <div class="search-result">-->
+                    <!--        <div class="search-result__content">-->
+                    <!--            <div class="search-result__content__title">Other Landlords</div>-->
+                    <!--            <div class="mb-5">-->
+                    <!--                <a href="" class="flex items-center">-->
+                    <!--                    <div class="w-8 h-8 bg-success/20 dark:bg-success/10 text-success flex items-center justify-center rounded-full"> <i class="w-4 h-4" data-lucide="inbox"></i> </div>-->
+                    <!--                    <div class="ml-3">View all Landlords</div>-->
+                    <!--                </a>-->
+                    <!--                <a href="" class="flex items-center mt-2">-->
+                    <!--                    <div class="w-8 h-8 bg-pending/10 text-pending flex items-center justify-center rounded-full"> <i class="w-4 h-4" data-lucide="users"></i> </div>-->
+                    <!--                    <div class="ml-3">View all Tenants</div>-->
+                    <!--                </a>-->
+                                    
+                    <!--            </div>-->
+                    <!--            <div class="search-result__content__title">Landlords</div>-->
+                    <!--            <div class="mb-5">-->
+                    <!--                <a href="" class="flex items-center mt-2">-->
+                    <!--                    <div class="w-8 h-8 image-fit">-->
+                    <!--                        <img alt="Midone - HTML Admin Template" class="rounded-full" src="dist/images/profile-15.jpg">-->
+                    <!--                    </div>-->
+                    <!--                    <div class="ml-3">Angelina Jolie</div>-->
+                    <!--                    <div class="ml-auto w-48 truncate text-slate-500 text-xs text-right">angelinajolie@left4code.com</div>-->
+                    <!--                </a>-->
+                                   
+                    <!--            </div>-->
+                               
+                    <!--        </div>-->
+                    <!--    </div>-->
+                    <!--</div>-->
+                    <!-- END: Search -->
+                    <!-- BEGIN: Account Menu -->
+                    <div class="intro-x dropdown w-8 h-8">
+                        <div class="dropdown-toggle w-8 h-8 rounded-full overflow-hidden shadow-lg image-fit zoom-in" role="button" aria-expanded="false" data-tw-toggle="dropdown">
+                            <img alt="africneibor" id="pr_img" src="">
+                        </div>
+                        <div class="dropdown-menu w-56">
+                            <ul class="dropdown-content bg-primary text-white">
+                                <li class="p-2">
+                                    <div class="font-medium" id="d-name">Name</div>
+                                    <div class="text-xs text-white/70 mt-0.5 dark:text-slate-500">Tenant/</div>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider border-white/[0.08]">
+                                </li>
+                                <li>
+                                    <a href="tenant-signup" class="dropdown-item hover:bg-white/5"> <i data-lucide="user" class="w-4 h-4 mr-2"></i> Profile </a>
+                                </li>
+                                <!--<li>-->
+                                <!--    <a href="" class="dropdown-item hover:bg-white/5"> <i data-lucide="lock" class="w-4 h-4 mr-2"></i> Reset Password </a>-->
+                                <!--</li>-->
+                                <li>
+                                    <a href="../contact" class="dropdown-item hover:bg-white/5"> <i data-lucide="help-circle" class="w-4 h-4 mr-2"></i> Help </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider border-white/[0.08]">
+                                </li>
+                                <li>
+                                    <a style="cursor:pointer" onclick="logout();" class="dropdown-item hover:bg-white/5"> <i data-lucide="toggle-right" class="w-4 h-4 mr-2"></i> Logout </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- END: Account Menu -->
+                </div>
+                <!-- END: Top Bar -->
+                <div class="grid grid-cols-12 gap-6"  >
+                    <div class="col-span-12 2xl:col-span-9" id="general">
+                        <div class="grid grid-cols-12 gap-6">
+                            <!-- BEGIN: General Report -->
+                            <div class="col-span-12 mt-8">
+                                <div class="intro-y flex items-center h-10">
+                                    <h2 class="text-lg font-medium truncate mr-5">
+                                        General Report
+                                    </h2>
+                                    <a class="ml-auto flex items-center text-primary"> <i data-lucide="refresh-ccw" class="w-4 h-4 mr-3"></i>TENANT </a>
+                                </div>
+                                <div class="grid grid-cols-12 gap-6 mt-5">
+                                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                                        <div class="report-box zoom-in">
+                                            <div class="box p-5">
+                                                <div class="flex">
+                                                    <i data-lucide="monitor" class="report-box__icon text-primary"></i> 
+                                                    <div class="ml-auto">
+                                                        <div class="report-box__indicator bg-success tooltip cursor-pointer" title="4 verified"> 0
+                                                        <i data-lucide="chevron-up" class="w-4 h-4 ml-0.5"></i> </div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-3xl font-medium leading-8 mt-6">0</div>
+                                                <div class="text-base text-slate-500 mt-1">Your Guarantor</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                                        <div class="report-box zoom-in">
+                                            <div class="box p-5">
+                                                <div class="flex">
+                                                    <i data-lucide="monitor" class="report-box__icon text-warning"></i> 
+                                                    <div class="ml-auto">
+                                                        <div class="report-box__indicator bg-success tooltip cursor-pointer"><span id="days_rem"></span> <i data-lucide="chevron-down" class="w-4 h-4 ml-0.5"></i> </div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-base font-small leading-8 mt-6" id="sub_expiry_date"></div>
+                                                <div class="text-base text-slate-500 mt-1">Subscription Expiry</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                                        <div class="report-box zoom-in">
+                                            <div class="box p-5">
+                                                <div class="flex">
+                                                    <i data-lucide="shopping-cart" class="report-box__icon text-warning"></i> 
+                                                    <div class="ml-auto">
+                                                        <!--<div class="report-box__indicator bg-success tooltip cursor-pointer" title="3 days"> </div>-->
+                                                    </div>
+                                                </div>
+                                                <div class="text-3xl font-medium leading-8 mt-6" id="tsub"></div>
+                                                <div class="text-base text-slate-500 mt-1">Total Subscription</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                                        <div class="report-box zoom-in">
+                                            <div class="box p-5">
+                                                <div class="flex">
+                                                    <i data-lucide="user" class="report-box__icon text-success"></i> 
+                                                    <div class="ml-auto">
+                                                        <div class="report-box__indicator bg-success tooltip cursor-pointer" title="3 landlords"> 1 landlords
+                                                        <i data-lucide="chevron-up" class="w-4 h-4 ml-0.5"></i> </div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-3xl font-medium leading-8 mt-6">3</div>
+                                                <div class="text-base text-slate-500 mt-1">Profile visitors</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END: General Report -->
+                           
+                          
+                           
+                            <div class="col-span-12 grid grid-cols-12 gap-6 mt-8">
+                                <div class="col-span-12 sm:col-span-12 2xl:col-span-6 intro-y">
+                                    <div class="box p-5 zoom-in">
+                                        <div class="flex items-center">
+                                            <div class="w-2/4 flex-none">
+                                                 <div class="text-lg font-large truncate" id="hours"></div>
+                                                <div class="text-slate-500 mt-1">Countdown to Subscription Expiry</div>
+                                            </div>
+                                            <div class="flex-none ml-auto relative">
+                                                   <div class="progress-circle" id="progress-circle" style="--percent: 0;">
+                                                    <div class="progress-circle-inner">
+                                                        <h2 id="days">0</h1>
+                                                    </div>
+                                                
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--<div class="col-span-12 sm:col-span-6 2xl:col-span-3 intro-y">-->
+                                <!--    <div class="box p-5 zoom-in">-->
+                                <!--        <div class="flex">-->
+                                <!--            <div class="text-lg font-medium truncate mr-3">Social Media</div>-->
+                                <!--            <div class="py-1 px-2 flex items-center rounded-full text-xs bg-slate-100 dark:bg-darkmode-400 text-slate-500 cursor-pointer ml-auto truncate">320 Followers</div>-->
+                                <!--        </div>-->
+                                <!--        <div class="mt-1">-->
+                                <!--            <div class="h-[58px]">-->
+                                <!--                <canvas class="simple-line-chart-1 -ml-1"></canvas>-->
+                                <!--            </div>-->
+                                <!--        </div>-->
+                                <!--    </div>-->
+                                <!--</div>-->
+                                
+                            </div>
+                            
+                            
+                             </div>
+                            </div>
+                            <!-- END: General Report -->
+                            
+                             <!-- BEGIN: Weekly Top Products -->
+                             <div class="col-span-12 2xl:col-span-9" id="subscriptions" style="display:none">
+                        <div class="grid grid-cols-12 gap-6">
+                            <div class="col-span-12 mt-6">
+                                <div class="intro-y block sm:flex items-center h-10">
+                                    <h2 class="text-lg font-medium truncate mr-5">
+                                        YOUR PAYMENTS ON AFRICNEIBOR
+                                    </h2>
+                                    
+                                </div>
+                                <div class="intro-y overflow-auto lg:overflow-visible mt-8 sm:mt-0">
+                                    <table class="table table-report sm:mt-2" id="payments_table">
+                                        <thead>
+                                            <tr>
+                                                <th class="whitespace-nowrap">REFERENCE</th>
+                                                <th class="whitespace-nowrap">DESCRIPTION</th>
+                                                <th class="text-center whitespace-nowrap">AMOUNT PAID</th>
+                                                <th class="text-center whitespace-nowrap">PAY PLATFORM</th>
+                                                <th class="text-center whitespace-nowrap">DATE</th>
+                                                <th class="text-center whitespace-nowrap">STATUS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="all_payments_tbody" name="tbody">
+                                            
+                                           
+                                        </tbody>
+                                    </table>
+                                </div>
+                               
+                            </div>
+                            </div>
+                            </div>
+                            <!-- END: Weekly Top Products -->
+                            
+                           
+                    </div>
+                           
+                </div>
+            </div>
+            <!-- END: Content -->
+        </div>
+        <!-- BEGIN: Dark Mode Switcher-->
+        <div data-url="change.html" class="dark-mode-switcher cursor-pointer shadow-md fixed bottom-0 right-0 box dark:bg-dark-2 border rounded-full w-40 h-12 flex items-center justify-center z-50 mb-10 mr-10">
+            <div class="mr-4 text-gray-700 dark:text-gray-300">Active Account</div>
+            <div class="dark-mode-switcher__toggle border"></div>
+        </div>
+        <!-- END: Dark Mode Switcher-->
+        
+        <!-- BEGIN: JS Assets-->
+        <script src="dist/js/app.js"></script>
+         <script src="./js/country.js"></script>
+          <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+          <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script>
+const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var next_sub_date = ""; 
+        
+</script>
+        <script>
+         function dashboard(){
+                document.getElementById("general").style.display="block";
+                document.getElementById("subscriptions").style.display="none";
+
+            }
+             function subscriptions(){
+                document.getElementById("general").style.display="none";
+                document.getElementById("subscriptions").style.display="block";
+
+            }
+            
+            
+            function logout(){
+                sessionStorage.clear();
+                window.location.href="login";
+            }
+            
+        async function get_user(){
+           
+        var requestOptions = {
+          method: 'GET',
+          redirect: 'follow'
+        };
+
+        await fetch(base_url+"/v1/user/"+user_id, requestOptions)
+          .then(response => response.json())
+          .then(result => {
+              console.log(result);
+              next_sub_date = result.data.last_subscription_date;
+                var date = new Date(next_sub_date);
+
+                // Add 1 year to the date
+                date.setFullYear(date.getFullYear() + 1);
+                var next_sub = date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear();
+                document.getElementById("sub_expiry_date").innerHTML = next_sub;
+
+              Object.assign(user_details, {"firstname": result.data.firstname});
+              Object.assign(user_details, {"lastname": result.data.lastname});
+              Object.assign(user_details, {"middlename": result.data.middlename});
+              Object.assign(user_details, {"country": result.data.country});
+              Object.assign(user_details, {"state": result.data.state});
+              Object.assign(user_details, {"city": result.data.city});
+              Object.assign(user_details, {"dob": result.data.dob});
+              Object.assign(user_details, {"address": result.data.address});
+              Object.assign(user_details, {"phone": result.data.phone_no});
+              Object.assign(user_details, {"id_number": result.data.id_number});
+              Object.assign(user_details, {"id_method": result.data.id_method});
+              Object.assign(user_details, {"profile_pics": result.data.image});
+              Object.assign(user_details, {"email": result.data.email});
+              document.getElementById("d-name").innerHTML = user_details["firstname"] + " "+ user_details["lastname"];
+              document.getElementById("pr_img").src = user_details["profile_pics"];
+
+              
+              
+        })
+        .catch(error => console.log('error', error));
+        countdown(next_sub_date);
+        }
+        get_user();
+            
+        async function payments(){
+             var requestOptions = {
+            method: 'GET',
+            headers: {
+                "Authorization": `Bearer ${ADMIN_TOKEN}`
+              },
+            redirect: 'follow'
+        };
+
+        await fetch(base_url+"/v1/user/"+user_id+"/transactions", requestOptions)
+        .then(response => response.json())
+        .then(result2 => {
+             var table = document.getElementById("all_payments_tbody");
+            var payment_details = Object.values(result2.data);
+            console.log(payment_details);
+            table.innerHTML = "";
+            var count = 0;
+            var tsub = 0;
+            for(var i = 0; i < payment_details.length; i++){
+                var p_desc = payment_details[i]["description"];
+                var p_amt = payment_details[i]["amount"];
+                var p_tref = payment_details[i]["trx_reference"];
+                var p_status = payment_details[i]["status"];
+                var p_platform = payment_details[i]["platform"];
+                var p_date = payment_details[i]["created_at"];
+                var date = new Date(p_date);
+
+                
+                // Format date to Day, Month (word), Year
+                var formatted_p_date = date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear();
+
+                table.innerHTML += '<tr class="intro-x">'+ 
+                    '<td class="w-20">' + p_tref.toUpperCase() + '</td>' + 
+                    '<td>' + 
+                        '<div class="font-weight-bold w-25">' + p_desc + '</div>' + 
+                    '</td>' + 
+                    '<td>' + 
+                        '<div class="font-weight-bold text-center"> ₦' + p_amt + '</div>' + 
+                    '</td>' + 
+                    '<td>' + 
+                        '<div class="font-weight-bold text-center">' + p_platform.toUpperCase() + '</div>' + 
+                    '</td>' +  
+                    '<td>' + 
+                        '<div class="font-weight-bold text-center">' + formatted_p_date + '</div>' + 
+                    '</td>' + 
+                    '<td class="text-center" id="p_status_div'+i+'"></td>' + 
+                '</tr>';
+                    
+                    count += 1;
+                    
+                    // Status handling
+                    if(p_status == "pending"){
+                        document.getElementById("p_status_div"+i).innerHTML= '<div class="d-flex justify-content-center text-info"> PENDING </div>';
+                    } else if(p_status == "success"){
+                        document.getElementById("p_status_div"+i).innerHTML = '<div class="d-flex justify-content-center text-success"> <i class="bi bi-check-square-fill me-2"></i> SUCCESS </div>';
+                        tsub+=p_amt;
+                    }
+                    else{
+                        document.getElementById("p_status_div"+i).innerHTML= '<div class="d-flex justify-content-center text-info"> FAILED </div>';
+
+                    }
+                    
+                   
+                                    
+                
+                               
+            }
+            if(!count > 0){
+                table.innerHTML += '<tr class="intro-x">'+
+                                    '<td colspan=5><div class="font-medium whitespace-nowrap">NO PAYMENTS YET!</div></td></tr>';
+            }
+            document.getElementById("tsub").innerHTML=tsub;
+            })
+            
+        .catch(error => console.log('error', error));
+        $('#payments_table').DataTable();
+    }
+    
+    payments();
+    
+    function countdown(subdate) {
+        // Target date (with 1 year added)
+        next_sub_date = new Date(subdate);
+        var targetDate = next_sub_date;
+        targetDate.setFullYear(targetDate.getFullYear() + 1);
+
+        // Get the total time between now and the target date in seconds
+        var totalSeconds = (targetDate.getTime() - new Date().getTime()) / 1000;
+
+        // Update the countdown every 1 second
+        var interval = setInterval(function() {
+            var now = new Date().getTime();
+            var distance = targetDate - now;
+
+            // Time calculations for days, hours, minutes, and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Calculate percentage of time remaining for the progress circle
+            var remainingSeconds = distance / 1000;
+            var percent = (remainingSeconds / totalSeconds) * 100;
+
+            // Display the time
+            document.getElementById("days").innerText = days+"days";
+            document.getElementById("days_rem").innerText = days;
+            document.getElementById("hours").innerText = hours + "h " + minutes + "m " + seconds + "s";
+
+            // Update the progress circle's percentage
+            document.getElementById("progress-circle").style.setProperty('--percent', percent);
+
+            // If the countdown is over, clear the interval and display "Expired"
+            if (distance < 0) {
+                clearInterval(interval);
+                document.getElementById("days").innerText = "0";
+                document.getElementById("hours").innerText = "Subscription Expired";
+            }
+        }, 1000);
+    }
+    
+  
+        </script>
+        <!-- END: JS Assets-->
+    </body>
+</html>

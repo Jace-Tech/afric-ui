@@ -1,0 +1,2116 @@
+<!DOCTYPE html>
+
+<html lang="en" class="light">
+    <!-- BEGIN: Head -->
+    <head>
+        <meta charset="utf-8">
+        <link href="../logo.png" rel="icon">
+        <link href="../logo.png" rel="apple-touch-icon">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Explore the life changing services that AfricNeibor offers. Manage your tenants and properties in one place!">
+        <meta  name="keywords" content="AfricNeibor, africneibor, property management, lease management, tenant management, property ownership, data collection, landlords, tenants">
+        
+        <meta name="author" content="adricneibor">
+        <title>ADMIN Dashboard - AfricNeibor</title>
+        <!-- BEGIN: CSS Assets-->
+        <link rel="stylesheet" href="dist/css/app.css" />
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+         <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+         
+        <!-- END: CSS Assets-->
+        <style>
+            .modal-body {
+            max-height: 70vh; /* Limits height to 70% of the viewport */
+            overflow-y: auto; /* Enables vertical scrolling */
+        }
+         .card {
+            margin-bottom: 20px; /* Adds spacing between cards */
+        }
+        
+        .card-body h6 {
+            margin-bottom: 15px; /* Adds spacing below the heading */
+        }
+/* Optional: Customize the card border color and background color */
+        .card.border-primary {
+            border-color: #007bff !important; /* Bootstrap primary color */
+        }
+        
+        .card.border-success {
+            border-color: #28a745 !important; /* Bootstrap success color */
+        }
+        
+        .card.border-warning {
+            border-color: #ffc107 !important; /* Bootstrap warning color */
+        }
+        
+        .card.border-info {
+            border-color: #17a2b8 !important; /* Bootstrap info color */
+        }
+        
+        .card.border-danger {
+            border-color: #dc3545 !important; /* Bootstrap danger color */
+        }
+        h5{
+            text-transform:uppercase;
+        }
+        
+        /* Make image circular */
+        #userImage {
+            border-radius: 50%; /* Ensures the image is rounded like a profile picture */
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        
+        
+        /* Style the verified badge */
+        .verified-badge {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background-color: #28a745; /* Green background */
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .not-verified-badge {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background-color: red; /* red background */
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Optional: Bootstrap icon for checkmark (you need Bootstrap Icons for this) */
+        .verified-badge i {
+            font-size: 1rem;
+            margin-right: 5px;
+        }
+        /* Adjust spacing around elements */
+        .card-body {
+            position: relative; /* Ensures badge stays positioned relative to this */
+        }
+        </style>
+        <script>
+        const base_url = "https://africneighbour.onrender.com/api";
+        var admin_id = sessionStorage.getItem("admin_id");
+        var bearer = sessionStorage.getItem("bearer_token");
+        var role = sessionStorage.getItem("role");
+        const ADMIN_TOKEN = bearer;
+                          
+        if(role != "admin" || admin_id == null){
+           window.location.href = "admin-login";
+           }
+       </script>  
+    </head>
+    <!-- END: Head -->
+    
+    <body class="py-5 md:py-0 bg-black/[0.15] dark:bg-transparent">
+        <!-- BEGIN: Mobile Menu -->
+        <div class="mobile-menu md:hidden">
+            <div class="mobile-menu-bar">
+                <a href="" class="flex mr-auto">
+                    <img alt="africneibor - logo" class="w-20" src="../logo.png">
+                </a>
+                <a href="javascript:;" class="mobile-menu-toggler"> <i data-lucide="bar-chart-2" class="w-8 h-8 text-white transform -rotate-90"></i> </a>
+            </div>
+            <div class="scrollable">
+                <a href="javascript:;" class="mobile-menu-toggler"> <i data-lucide="x-circle" class="w-8 h-8 text-white transform -rotate-90"></i> </a>
+                <ul class="scrollable__content py-2">
+                    
+                   
+                    
+                   <li>
+                        <a style="cursor:pointer" onclick="dashboard();" class="menu">
+                            <div class="menu__icon"> <i data-lucide="home"></i> </div>
+                            <div class="menu__title">Dashboard </div>
+                        </a>
+                    </li>
+                   <li>
+                        <a style="cursor:pointer" onclick="all_plans();" class="menu">
+                            <div class="menu__icon"> <i data-lucide="credit-card"></i> </div>
+                            <div class="menu__title"> All Plans </div>
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a style="cursor:pointer" onclick="add_admin();" class="menu">
+                            <div class="menu__icon"> <i data-lucide="credit-card"></i> </div>
+                            <div class="menu__title"> Register new Admin </div>
+                        </a>
+                    </li>
+                    <!--<li>-->
+                    <!--    <a style="cursor:pointer" onclick="subscriptions();" class="menu">-->
+                    <!--        <div class="menu__icon"> <i data-lucide="credit-card"></i> </div>-->
+                    <!--        <div class="menu__title"> Register a Marketer </div>-->
+                    <!--    </a>-->
+                    <!--</li>-->
+                    <li>
+                        <a style="cursor:pointer" onclick="subscriptions();" class="menu">
+                            <div class="menu__icon"> <i data-lucide="credit-card"></i> </div>
+                            <div class="menu__title"> Subscriptions </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a style="cursor:pointer" onclick="property_requests();" class="menu">
+                            <div class="menu__icon"> <i data-lucide="home"></i> </div>
+                            <div class="menu__title"> Property Requests </div>
+                        </a>
+                    </li>
+                   
+                    
+                    <li class="menu__devider my-6"></li>
+                    
+                    <li>
+                        <a href="javascript:;" class="menu">
+                            <div class="menu__icon"> <i data-lucide="users"></i> </div>
+                            <div class="menu__title">View all Users <i data-lucide="chevron-down" class="menu__sub-icon "></i> </div>
+                        </a>
+                        <ul class="">
+                            <li>
+                                <a href="all-landlords" class="menu">
+                                    <div class="menu__icon"> <i data-lucide="users"></i> </div>
+                                    <div class="menu__title"> Landlords </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="all-tenants" class="menu">
+                                    <div class="menu__icon"> <i data-lucide="users"></i> </div>
+                                    <div class="menu__title">Tenants </div>
+                                </a>
+                            </li>
+                           
+                        </ul>
+                    </li>
+                      
+                     
+                      
+                    <li>
+                        <a href="all-properties" class="menu">
+                            <div class="menu__icon"> <i data-lucide="home"></i> </div>
+                            <div class="menu__title">All Properties </div>
+                        </a>
+                    </li>
+                         <li class="menu__devider my-6"></li>
+                          <li>
+                        <a style="cursor:pointer" onclick="profile();" class="menu">
+                            <div class="menu__icon"> <i data-lucide="user"></i> </div>
+                            <div class="menu__title"> Your Profile</div>
+                        </a>
+                    </li>
+                            
+                           
+                            <li>
+                                <a href="logout.php" class="menu">
+                                    <div class="menu__icon"> <i data-lucide="user"></i> </div>
+                                    <div class="menu__title"> Logout </div>
+                                </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- END: Mobile Menu -->
+        <div class="flex mt-[4.7rem] md:mt-0 overflow-hidden">
+            <!-- BEGIN: Side Menu -->
+            <nav class="side-nav">
+                <a href="" class="intro-x flex items-center pl-5 pt-4 mt-3">
+                    <img alt="africneibor - logo" class="w-20" src="../logo.png">
+                </a>
+                <div class="side-nav__devider my-6"></div>
+                <ul>
+                    <li>
+                        <a style="cursor:pointer" onclick="dashboard();" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="home"></i> </div>
+                            <div class="side-menu__title">Dashboard </div>
+                        </a>
+                    </li>
+                     <li>
+                        <a style="cursor:pointer" onclick="all_plans();" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="credit-card"></i> </div>
+                            <div class="side-menu__title"> All Plans </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a style="cursor:pointer" onclick="add_admin();" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="credit-card"></i> </div>
+                            <div class="side-menu__title"> Register new Admin </div>
+                        </a>
+                    </li>
+                    
+                   <li>
+                        <a style="cursor:pointer" onclick="subscriptions();" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="credit-card"></i> </div>
+                            <div class="side-menu__title"> Subscriptions </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a style="cursor:pointer" onclick="property_requests();" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="home"></i> </div>
+                            <div class="side-menu__title"> property Requests </div>
+                        </a>
+                    </li>
+                  
+                   <li>
+                        <a style="cursor:pointer" onclick="g_requests();" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="user"></i> </div>
+                            <div class="side-menu__title"> View Guarantors</div>
+                        </a>
+                    </li>
+                   
+                   
+                    <li class="side-nav__devider my-6"></li>
+                  
+                    <li>
+                        <a href="javascript:;" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="users"></i> </div>
+                            <div class="side-menu__title">
+                                View all Users 
+                                <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
+                            </div>
+                        </a>
+                        <ul class="">
+                            <li>
+                                <a href="all-landlords" class="side-menu">
+                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                    <div class="side-menu__title">Landlords</div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="all-tenants" class="side-menu">
+                                    <div class="side-menu__icon"> <i data-lucide="activity"></i> </div>
+                                    <div class="side-menu__title">Tenants</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                     
+                            <li>
+                        <a href="all-properties" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="home"></i> </div>
+                            <div class="side-menu__title"> All Properties </div>
+                        </a>
+                    </li> 
+                           
+                           
+                            <li class="side-nav__devider my-6"></li>
+                          <li>
+                        <a style="cursor:pointer" onclick="profile();" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="user"></i> </div>
+                            <div class="side-menu__title"> Your Profile </div>
+                        </a>
+                    </li>
+                            
+                           
+                             <li>
+                        <a href="logout.php" class="side-menu">
+                            <div class="side-menu__icon"> <i data-lucide="user"></i> </div>
+                            <div class="side-menu__title"> Logout </div>
+                        </a>
+                    </li>
+                   
+                </ul>
+            </nav>
+            <!-- END: Side Menu -->
+            <!-- BEGIN: Content -->
+            <div class="content">
+                <!-- BEGIN: Top Bar -->
+                <div class="top-bar -mx-4 px-4 md:mx-0 md:px-0">
+                    <!-- BEGIN: Breadcrumb -->
+                    <nav aria-label="breadcrumb" class="-intro-x mr-auto hidden sm:flex">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="https://africneibor.com">AfricNeibor</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                        </ol>
+                    </nav>
+                    <!-- END: Breadcrumb -->
+                    <!-- BEGIN: Search -->
+                    <div class="intro-x relative mr-3 sm:mr-6">
+                        <div class="search hidden sm:block">
+                            <input type="text" class="search__input form-control border-transparent" placeholder="Search...">
+                            <i data-lucide="search" class="search__icon dark:text-slate-500"></i> 
+                        </div>
+                        <a class="notification sm:hidden" href=""> <i data-lucide="search" class="notification__icon dark:text-slate-500"></i> </a>
+                        <div class="search-result">
+                            <div class="search-result__content">
+                                <div class="search-result__content__title">Other Landlords</div>
+                                <div class="mb-5">
+                                    <a href="all-landlords" class="flex items-center">
+                                        <div class="w-8 h-8 bg-success/20 dark:bg-success/10 text-success flex items-center justify-center rounded-full"> <i class="w-4 h-4" data-lucide="inbox"></i> </div>
+                                        <div class="ml-3">View all Landlords</div>
+                                    </a>
+                                    <a href="all-tenants" class="flex items-center mt-2">
+                                        <div class="w-8 h-8 bg-pending/10 text-pending flex items-center justify-center rounded-full"> <i class="w-4 h-4" data-lucide="users"></i> </div>
+                                        <div class="ml-3">View all Tenants</div>
+                                    </a>
+                                    
+                                </div>
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END: Search -->
+                    <!-- BEGIN: Notifications -->
+                    <div class="intro-x dropdown mr-auto sm:mr-6">
+                        <div class="dropdown-toggle notification notification--bullet cursor-pointer" role="button" aria-expanded="false" data-tw-toggle="dropdown"> <i data-lucide="bell" class="notification__icon dark:text-slate-500"></i> </div>
+                        <div class="notification-content pt-2 dropdown-menu">
+                            <div class="notification-content__box dropdown-content">
+                                <div class="notification-content__title">Notifications</div>
+                                <div class="cursor-pointer relative flex items-center ">
+                                    <div class="w-12 h-12 flex-none image-fit mr-1">
+                                        <img alt="Midone - HTML Admin Template" class="rounded-full" src="dist/images/profile-15.jpg">
+                                        <div class="w-3 h-3 bg-success absolute right-0 bottom-0 rounded-full border-2 border-white dark:border-darkmode-600"></div>
+                                    </div>
+                                    <div class="ml-2 overflow-hidden">
+                                        <div class="flex items-center">
+                                            <a href="javascript:;" class="font-medium truncate mr-5">Angelina Jolie</a> 
+                                            <div class="text-xs text-slate-400 ml-auto whitespace-nowrap">01:10 PM</div>
+                                        </div>
+                                        <div class="w-full truncate text-slate-500 mt-0.5">notification</div>
+                                    </div>
+                                </div>
+                               
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END: Notifications -->
+                    <!-- BEGIN: Account Menu -->
+                    <div class="intro-x dropdown w-8 h-8">
+                        <div class="dropdown-toggle w-8 h-8 rounded-full overflow-hidden shadow-lg image-fit zoom-in" role="button" aria-expanded="false" data-tw-toggle="dropdown">
+                            <img alt="Midone - HTML Admin Template" src="dist/images/profile-3.jpg">
+                        </div>
+                        <div class="dropdown-menu w-56">
+                            <ul class="dropdown-content bg-primary text-white">
+                                <li class="p-2">
+                                    <div class="font-medium">Name</div>
+                                    <div class="text-xs text-white/70 mt-0.5 dark:text-slate-500">Administrator</div>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider border-white/[0.08]">
+                                </li>
+                                <li>
+                                    <a href="" class="dropdown-item hover:bg-white/5"> <i data-lucide="user" class="w-4 h-4 mr-2"></i> Profile </a>
+                                </li>
+                                <li>
+                                    <a href="" class="dropdown-item hover:bg-white/5"> <i data-lucide="lock" class="w-4 h-4 mr-2"></i> Reset Password </a>
+                                </li>
+                                <li>
+                                    <a href="../contact" class="dropdown-item hover:bg-white/5"> <i data-lucide="help-circle" class="w-4 h-4 mr-2"></i> Help </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider border-white/[0.08]">
+                                </li>
+                                <li>
+                                    <a href="logout" class="dropdown-item hover:bg-white/5"> <i data-lucide="toggle-right" class="w-4 h-4 mr-2"></i> Logout </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- END: Account Menu -->
+                </div>
+                <!-- END: Top Bar -->
+                <div class="grid grid-cols-12 gap-6"  >
+                    <div class="col-span-12 2xl:col-span-9" id="general">
+                        <div class="grid grid-cols-12 gap-6">
+                            <!-- BEGIN: General Report -->
+                            <div class="col-span-12 mt-8">
+                                <div class="intro-y flex items-center h-10">
+                                    <h2 class="text-lg font-medium truncate mr-5">
+                                        General Report
+                                    </h2>
+                                    <a href="" class="ml-auto flex items-center text-primary"> <i data-lucide="refresh-ccw" class="w-4 h-4 mr-3"></i> Reload Data </a>
+                                </div>
+                                <div class="grid grid-cols-12 gap-6 mt-5">
+                                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                                        <div class="report-box zoom-in">
+                                            <div class="box p-5">
+                                                <div class="flex">
+                                                    <i data-lucide="user" class="report-box__icon text-primary"></i> 
+                                                    <div class="ml-auto">
+                                                        <div class="report-box__indicator bg-success tooltip cursor-pointer" title="4 verified"> 4 verified
+                                                        <i data-lucide="chevron-up" class="w-4 h-4 ml-0.5"></i> </div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-3xl font-medium leading-8 mt-6">4</div>
+                                                <div class="text-base text-slate-500 mt-1">Registered Landlords</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                                        <div class="report-box zoom-in">
+                                            <div class="box p-5">
+                                                <div class="flex">
+                                                    <i data-lucide="user" class="report-box__icon text-pending"></i> 
+                                                    <div class="ml-auto">
+                                                        <div class="report-box__indicator bg-danger tooltip cursor-pointer" title="3 active">3 verified
+                                                        <i data-lucide="chevron-down" class="w-4 h-4 ml-0.5"></i> </div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-3xl font-medium leading-8 mt-6">3</div>
+                                                <div class="text-base text-slate-500 mt-1">Registered Tenants</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                                        <div class="report-box zoom-in">
+                                            <div class="box p-5">
+                                                <div class="flex">
+                                                    <i data-lucide="credit-card" class="report-box__icon text-warning"></i> 
+                                                    <div class="ml-auto">
+                                                        <div class="report-box__indicator bg-success tooltip cursor-pointer"> <span id="total_p_sub" class="mr-1"></span><i data-lucide="chevron-up" class="w-4 h-4 ml-0.5"></i> Pending </div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-3xl font-medium leading-8 mt-6">₦<span id="total_sub" class="mr-1"></span> </div>
+                                                <div class="text-base text-slate-500 mt-1">Total Subscriptions</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-12 sm:col-span-6 xl:col-span-3 intro-y">
+                                        <div class="report-box zoom-in">
+                                            <div class="box p-5">
+                                                <div class="flex">
+                                                    <i data-lucide="home" class="report-box__icon text-success"></i> 
+                                                    <div class="ml-auto">
+                                                        <div class="report-box__indicator bg-success tooltip cursor-pointer" ><span id="num_ver_prop" class="mr-1"></span>Verified
+                                                        <i data-lucide="chevron-up" class="w-4 h-4 ml-0.5"></i> </div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-3xl font-medium leading-8 mt-6" id="num_prop"></div>
+                                                <div class="text-base text-slate-500 mt-1">Properties</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END: General Report -->
+                            
+                             <!-- BEGIN: Weekly Top Products -->
+                             <div class="col-span-12 2xl:col-span-9" id="subadmin">
+                        <div class="grid grid-cols-12 gap-6">
+                            <div class="col-span-12 mt-6">
+                                <div class="intro-y block sm:flex items-center h-10">
+                                    <h2 class="text-lg font-medium truncate mr-5">
+                                        ALL REGISTERED SUB-ADMINS
+                                    </h2>
+                                    
+                                </div>
+                                <div class="intro-y overflow-auto lg:overflow-visible mt-8 sm:mt-0">
+                                    <table class="table table-report sm:mt-2" id="subadmin_table">
+                                        <thead>
+                                            <tr>
+                                                <th class="whitespace-nowrap">FIRST NAME</th>
+                                                <th class="whitespace-nowrap">LAST NAME</th>
+                                                <th class="whitespace-nowrap">EMAIL</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody id="subadmin_tbody" name="tbody">
+                                            
+                                           
+                                        </tbody>
+                                    </table>
+                                </div>
+                               
+                            </div>
+                            <!-- END: Weekly Top Products -->
+                        </div>
+                    </div>
+                           
+                          
+                           
+                            
+                             </div>
+                            </div>
+                            <!-- END: General Report -->
+                            
+                             <div class="col-span-12 2xl:col-span-9" id="add_admin" style="display:none">
+                        <div class="grid grid-cols-12 gap-6">
+                            <div class="col-span-12 mt-6">
+                                <div class="intro-y block sm:flex items-center h-10">
+                                    <h2 class="text-lg font-medium truncate mr-5">
+                                        Add an Admin</h2>
+                                   
+                                </div>
+                                <div class="intro-y box">
+                                    
+                                <div class="flex flex-col sm:flex-row items-center p-5 border-b border-slate-200/60 dark:border-darkmode-400">
+                                    <h2 class="font-medium text-base mr-auto">
+                                       FILL THE NEW ADMIN INFORMATION
+                                    </h2>
+                                </div>
+                    <form id="input" class="p-5">
+               <div class="grid grid-cols-12 gap-4 gap-y-3">
+   
+    <div class="col-span-12 sm:col-span-6">
+      <label for="admin_fname" class="form-label">Enter your First Name</label> 
+       <input required  class="form-control" name="admin_fname" id="admin_fname" type="text"
+    placeholder="John">
+
+        </div>
+         <div class="col-span-12 sm:col-span-6">
+      <label for="admin_lname" class="form-label">Enter your First Name</label> 
+       <input required  class="form-control" name="admin_lname" id="admin_lname" type="text"
+    placeholder="Doe">
+
+        </div>
+      <div class="col-span-12 sm:col-span-6">
+      <label for="admin_email" class="form-label">Enter the Admin Email Address</label> 
+    <input class="form-control" name="admin_email" id="admin_email" type="email"
+    placeholder="johndoe@gmail.com">
+
+    </div>
+    <div class="col-span-12 sm:col-span-6">
+      <label for="admin_password" class="form-label">Enter a Strong Password for this Admin</label> 
+    <input class="form-control" name="admin_password" id="admin_password" type="email">
+
+    </div>
+    
+   
+
+    <div class="col-span-12 mt-3">  
+<button type="button" class="btn btn-primary" onclick="reg_admin(this)">Register Admin</button>
+</div>
+        </div>
+    </form>
+    
+                                </div>
+                               
+                            </div>
+                       
+                        </div>
+                    </div>
+                         <!-- END: add a property -->
+                         
+                         
+                         <!-- BEGIN: Weekly Top Products -->
+                             <div class="col-span-12 2xl:col-span-9" id="subscriptions" style="display:none">
+                        <div class="grid grid-cols-12 gap-6">
+                            <div class="col-span-12 mt-6">
+                                <div class="intro-y block sm:flex items-center h-10">
+                                    <h2 class="text-lg font-medium truncate mr-5">
+                                        ALL PAYMENTS ON AFRICNEIBOR
+                                    </h2>
+                                    
+                                </div>
+                                <div class="intro-y overflow-auto lg:overflow-visible mt-8 sm:mt-0">
+                                    <table class="table table-report sm:mt-2" id="payments_table">
+                                        <thead>
+                                            <tr>
+                                                <th class="whitespace-nowrap">USER</th>
+                                                <th class="whitespace-nowrap">REFERENCE</th>
+                                                <th class="whitespace-nowrap">DESCRIPTION</th>
+                                                <th class="text-center whitespace-nowrap">AMOUNT PAID</th>
+                                                <th class="text-center whitespace-nowrap">PAY PLATFORM</th>
+                                                <th class="text-center whitespace-nowrap">DATE</th>
+                                                <th class="text-center whitespace-nowrap">STATUS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="all_payments_tbody" name="tbody">
+                                            
+                                           
+                                        </tbody>
+                                    </table>
+                                </div>
+                               
+                            </div>
+                            <!-- END: Weekly Top Products -->
+                        </div>
+                    </div>
+                    </div>
+                    
+                    
+                    
+                     <!-- BEGIN: Weekly Top Products -->
+                             <div class="col-span-12 2xl:col-span-9" id="prequest" style="display:none">
+                        <div class="grid grid-cols-12 gap-6">
+                            <div class="col-span-12 mt-6">
+                                <div class="intro-y block sm:flex items-center h-10">
+                                    <h2 class="text-lg font-medium truncate mr-5">
+                                        ALL PROPERTY REQUESTS
+                                    </h2>
+                                    
+                                </div>
+                                <div class="intro-y overflow-auto lg:overflow-visible mt-8 sm:mt-0">
+                                    <table class="table table-report sm:mt-2" id="prequest_table">
+                                        <thead>
+                                            <tr>
+                                                <th class="whitespace-nowrap">USER/TENANT</th>
+                                                <th class="whitespace-nowrap">PROPERTY</th>
+                                                <th class="whitespace-nowrap">PROPERTY TYPE</th>
+                                                <th class="whitespace-nowrap">LANDLORD</th>
+                                                <th class="whitespace-nowrap">DATE</th>
+                                                <th class="text-center whitespace-nowrap">STATUS</th>
+                                                  <th class="text-center whitespace-nowrap">ACTION</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="prequest_tbody" name="tbody">
+                                            
+                                           
+                                        </tbody>
+                                    </table>
+                                </div>
+                               
+                            </div>
+                            <!-- END: Weekly Top Products -->
+                        </div>
+                    </div>
+                    
+                    
+                     <!-- BEGIN: Weekly Top Products -->
+                             <div class="col-span-12 2xl:col-span-9" id="grequest" style="display:none">
+                        <div class="grid grid-cols-12 gap-6">
+                            <div class="col-span-12 mt-6">
+                                <div class="intro-y block sm:flex items-center h-10">
+                                    <h2 class="text-lg font-medium truncate mr-5">
+                                        ALL GUARANTOR REQUESTS
+                                    </h2>
+                                    
+                                </div>
+                                <div class="intro-y overflow-auto lg:overflow-visible mt-8 sm:mt-0">
+                                    <table class="table table-report sm:mt-2" id="grequest_table">
+                                        <thead>
+                                            <tr>
+                                                <th class="whitespace-nowrap" style="text-transform:uppercase">Guarantor Name</th>
+                                                <th class="whitespace-nowrap" style="text-transform:uppercase">Guarantor Contact</th>
+                                                <th class="whitespace-nowrap" style="text-transform:uppercase">Place of Work</th>
+                                                <th class="whitespace-nowrap" style="text-transform:uppercase">Relationship</th>
+                                                 <th class="whitespace-nowrap" style="text-transform:uppercase">Tenant Info</th>
+                                                <th class="text-center whitespace-nowrap">STATUS</th>
+                                                  <th class="text-center whitespace-nowrap">ACTION</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="grequest_tbody" name="tbody">
+                                            
+                                           
+                                        </tbody>
+                                    </table>
+                                </div>
+                               
+                            </div>
+                            <!-- END: Weekly Top Products -->
+                        </div>
+                    </div>
+                    
+                    
+                            <!-- BEGIN: Weekly Top Products -->
+                             <div class="col-span-12 2xl:col-span-9" id="plans" style="display:none">
+                        <div class="grid grid-cols-12 gap-6">
+                            <div class="col-span-12 mt-6">
+                                <div class="intro-y block sm:flex items-center h-10">
+                                    <h2 class="text-lg font-medium truncate mr-5">
+                                        PAYMENT PLANS
+                                    </h2>
+                                    <div class="flex items-center sm:ml-auto mt-3 sm:mt-0">
+                                        <button class="btn box flex items-center text-slate-600 dark:text-slate-300" data-tw-toggle="modal" data-tw-target="#add_plan_modal"> 
+                                        <i data-lucide="file-text" class="hidden sm:block w-4 h-4 mr-2"></i> Add New Plan</button>
+                                        </div>
+                                </div>
+                                <div class="intro-y overflow-auto lg:overflow-visible mt-8 sm:mt-0">
+                                    <table class="table table-report sm:mt-2" id="plans_table">
+                                        <thead>
+                                            <tr>
+                                                <th class="whitespace-nowrap">PLAN NAME</th>
+                                                <th class="whitespace-nowrap">CURRENCY</th>
+                                                <th class="text-center whitespace-nowrap">AMOUNT PAID</th>
+                                                <th class="text-center whitespace-nowrap">PAY PLATFORM</th>
+                                                <th class="text-center whitespace-nowrap">USER PLAN TYPE</th>
+                                                <th class="text-center whitespace-nowrap">DESCRIPTION</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="plans_tbody" name="tbody">
+                                            
+                                           
+                                        </tbody>
+                                    </table>
+                                </div>
+                               
+                            </div>
+                            <!-- END: Weekly Top Products -->
+                        </div>
+                    </div>
+                    
+                    
+                   
+                
+            
+           
+        </div>
+        <!-- BEGIN: Dark Mode Switcher-->
+        <!--<div data-url="change.html" class="dark-mode-switcher cursor-pointer shadow-md fixed bottom-0 right-0 box dark:bg-dark-2 border rounded-full w-40 h-12 flex items-center justify-center z-50 mb-10 mr-10">-->
+        <!--    <div class="mr-4 text-gray-700 dark:text-gray-300">Active Account</div>-->
+        <!--    <div class="dark-mode-switcher__toggle border"></div>-->
+        <!--</div>-->
+        <!-- END: Dark Mode Switcher-->
+        
+          <!-- BEGIN: Modal Toggle -->
+ <!-- BEGIN: Modal Content -->
+ <div id="add_plan_modal" class="modal" data-tw-backdrop="static" tabindex="-1" aria-hidden="true">
+     <div class="modal-dialog">
+         <div class="modal-content">
+             <!-- BEGIN: Modal Header -->
+             <div class="modal-header">
+                 <h2 class="font-medium text-base mr-auto">ADD NEW PAYMENT PLAN</h2>
+                
+             </div> <!-- END: Modal Header -->
+             <!-- BEGIN: Modal Body -->
+             <div class="modal-body grid grid-cols-12 gap-4 gap-y-3">
+                 <div class="col-span-12 sm:col-span-6"> <label for="plan_name" class="form-label">Plan Name</label>
+                 <input id="plan_name" type="text" class="form-control" placeholder="Subscription"> </div>
+                 
+                  <div class="col-span-12 sm:col-span-6"> <label for="plan_cur" class="form-label">Currency</label> 
+                               <select id="plan_cur" class="form-select">
+                                   <option value="0">--Choose the currency for this plan</option>
+                         <option value="USD">USD</option>
+                         <option value="NGN">NGN</option>
+                         <option value="EUR">EUR</option>
+                     </select> </div>
+                 
+                 <div class="col-span-12 sm:col-span-6"> <label for="plan_amount" class="form-label">Amount</label>
+                 <input id="plan_amount" type="number" class="form-control" placeholder="2000.00"> </div>
+                 
+                       
+                     
+                     <div class="col-span-12 sm:col-span-6"> <label for="plan_platform" class="form-label">Platform</label> <select id="plan_platform" class="form-select">
+                          <option value="0">--Choose the Platform for this plan</option>
+                         <option value="paystack">Paystack</option>
+                         <option value="stripe">Stripe</option>
+                     </select> </div>
+                     
+                     <div class="col-span-12 sm:col-span-6"> <label for="plan_user_type" class="form-label">User Plan Type</label> <select id="plan_user_type" class="form-select">
+                          <option value="0">--Choose the user for this plan</option>
+                         <option value="landlord">For Landlords</option>
+                         <option value="tenant">For Tenants</option>
+                     </select> </div>
+                     
+                     <div class="col-span-12 sm:col-span-6"> <label for="plan_interval" class="form-label">Plan Interval</label> <select id="plan_interval" class="form-select">
+                          <option value="0">--Choose the Plan Interval</option>
+                         <option value="yearly">Yearly</option>
+                         <option value="monthly">Monthly</option>
+                         <option value="weekly">Weekly</option>
+                         <option value="daily">Daily</option>
+                         
+                     </select> </div>
+                     
+                       <div class="col-span-12"> <label for="plan_desc" class="form-label">Plan Description</label>
+                 <input id="plan_desc" type="text" class="form-control" placeholder="User Anual Verification"> </div>
+                 
+                      
+             </div> <!-- END: Modal Body -->
+             <!-- BEGIN: Modal Footer -->
+             <div class="modal-footer"> <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-20 mr-1">Cancel</button> 
+             <button type="button" class="btn btn-primary w-20" onclick="add_plan(this);">Add</button> </div> <!-- END: Modal Footer -->
+         </div>
+ </div> <!-- END: Modal Content -->
+ </div> <!-- END: Modal Content -->
+ 
+ 
+ 
+ <!-- Modals for Tenant and Landlord Details -->
+<div class="modal fade" id="tenantDetailsModal" tabindex="-1" aria-labelledby="tenantDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+                <h5 class="modal-title" id="userDetailsModalLabel">Tenant's Full Details</h5>
+                <button type="button" class="btn-close" data-tw-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body overflow-auto" style="max-height: 70vh;">
+                <div class="row">
+                    <!-- User Basic Info -->
+                    <div class="col-md-12 mb-3">
+                        <div class="card bg-light border-primary">
+                            <div class="card-body">
+                                <img src="" id="userImage" class="img-fluid rounded-circle mb-3"  alt="User Image">
+                                <span class="verified-badge" id="ver" style="display:none;">
+                                    <i class="bi bi-check-circle-fill"></i> VERIFIED
+                                </span>
+                                <span class="not-verified-badge" id="notver" style="display:none">
+                                    <i class="bi bi-check-circle-fill"></i> NOT VERIFIED
+                                </span>
+                                <h5>Full Name: <span id="fullName"></span></h5>
+                                <p class="font-weight-bold"><strong>Email: </strong><span id="email"></span></p>
+                                <p class="font-weight-bold"><strong>Phone Number:</strong> <span id="phone"></span></p>
+                               <p class="font-weight-bold"><strong>Date of Birth:</strong> <span id="dob"></span></p>
+                                <p class="font-weight-bold"><strong>Country: </strong><span id="country"></span></p>
+                                <p class="font-weight-bold"><strong>State: </strong><span id="state"></span></p>
+                                <p class="font-weight-bold"><strong>Birth Town: </strong><span id="city"></span></p>
+                                <p class="font-weight-bold"><strong>Address: </strong><span id="address"></span></p>
+                                 <p class="font-weight-bold"><strong>Religion:</strong> <span id="religion"></span></p>
+                                  <p class="font-weight-bold"><strong>Relationship Status:</strong> <span id="rel_status"></span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tenant Details -->
+                    <div class="col-md-6 mb-3">
+                        <div class="card bg-light border-success">
+                            <div class="card-body">
+                                <h5>Tenant Information</h5>
+                                <p class="font-weight-bold"><strong>Occupation:  </strong><span id="occupation"></span></p>
+                                <p class="font-weight-bold"><strong>Monthly Salary: </strong> <span id="salary"></span></p>
+                                <p class="font-weight-bold"><strong>Permanent Address: </strong> <span id="permanentAddress"></span></p>
+                                <p class="font-weight-bold"><strong>Doctor's Name: </strong> <span id="doctorName"></span></p>
+                                <p class="font-weight-bold"><strong>Doctor's Phone Number: </strong> <span id="doctorPhone"></span></p>
+                                
+                                <p class="font-weight-bold"><strong>Criminal Record:</strong> <span id="criminalRecord"></span></p>
+                                
+                                <div id="crime_div"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Family Details -->
+                    <div class="col-md-6 mb-3">
+                        <div class="card bg-light border-warning">
+                            <div class="card-body">
+                                <h5>Family Details</h5>
+                                <p><strong id="pfam"></strong></p>
+                                <p class="font-weight-bold"><strong>Mother's Name:  </strong><span id="motherName"></span></p>
+                                <p class="font-weight-bold"><strong>Father's Name:  </strong><span id="fatherName"></span></p>
+                                <p class="font-weight-bold"><strong>Paternal Mother's Name: </strong> <span id="pMotherName"></span></p>
+                                <p class="font-weight-bold"><strong>Paternal Father's Name: </strong> <span id="pFatherName"></span></p>
+                                <p class="font-weight-bold"><strong>Maternal Mother's Name: </strong> <span id="mMotherName"></span></p>
+                                <p class="font-weight-bold"><strong>Maternal Father's Name:  </strong><span id="mFatherName"></span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Education Info -->
+                    <div class="col-md-12 mb-3">
+                        <div class="card bg-light border-info">
+                            <div class="card-body">
+                                <h5>Education</h5>
+                                <ul id="educationInfo" class="list-unstyled"></ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Employment Info -->
+                    <div class="col-md-12 mb-3">
+                        <div class="card bg-light border-danger">
+                            <div class="card-body">
+                                <h5>Employment</h5>
+                                <ul id="employmentInfo" class="list-unstyled"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                     <div class="col-md-12 mb-3">
+                        <div class="card bg-light border-danger">
+                            <div class="card-body">
+                                <h5>GUARANTOR DETAILS</h5>
+                                <ul id="guarantorList" class="list-unstyled">
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="card bg-light border-danger" id="reqbuttons">
+                            </div>
+                            </div>
+                </div>
+            </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-tw-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="landlordDetailsModal" tabindex="-1" aria-labelledby="landlordDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="landlordDetailsModalLabel">Landlord Details</h5>
+        <button type="button" class="btn-close" data-tw-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="landlordModalBody">
+        <!-- Landlord details will be dynamically populated -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-tw-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+ 
+ 
+        <!-- BEGIN: JS Assets-->
+        <script src="dist/js/app.js"></script>
+         <script src="./js/country.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.3/min/tiny-slider.js"></script>
+ <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+        
+
+        
+        <script>
+   
+ const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var next_sub_date = "";   
+       
+   
+    
+         function dashboard(){
+                document.getElementById("general").style.display="block";
+                document.getElementById("add_admin").style.display="none";
+                document.getElementById("plans").style.display="none";
+                document.getElementById("subscriptions").style.display="none";
+                document.getElementById("prequest").style.display="none";
+                document.getElementById("grequest").style.display="none";
+
+            }
+            function all_plans(){
+                document.getElementById("general").style.display="none";
+                document.getElementById("add_admin").style.display="none";
+                document.getElementById("plans").style.display="block";
+                document.getElementById("subscriptions").style.display="none";
+                document.getElementById("prequest").style.display="none";
+                document.getElementById("grequest").style.display="none";
+
+            }
+            function add_admin(){
+                document.getElementById("general").style.display="none";
+                document.getElementById("add_admin").style.display="block";
+                document.getElementById("plans").style.display="none";
+                document.getElementById("subscriptions").style.display="none";
+                document.getElementById("prequest").style.display="none";
+                document.getElementById("grequest").style.display="none";
+
+            }
+            function subscriptions(){
+                document.getElementById("general").style.display="none";
+                document.getElementById("add_admin").style.display="none";
+                document.getElementById("plans").style.display="none";
+                document.getElementById("subscriptions").style.display="block";
+                document.getElementById("prequest").style.display="none";
+                document.getElementById("grequest").style.display="none";
+
+            }
+            function property_requests(){
+                document.getElementById("general").style.display="none";
+                document.getElementById("add_admin").style.display="none";
+                document.getElementById("plans").style.display="none";
+                document.getElementById("subscriptions").style.display="none";
+                document.getElementById("prequest").style.display="block";
+                document.getElementById("grequest").style.display="none";
+
+            }
+            function g_requests(){
+                document.getElementById("general").style.display="none";
+                document.getElementById("add_admin").style.display="none";
+                document.getElementById("plans").style.display="none";
+                document.getElementById("subscriptions").style.display="none";
+                document.getElementById("prequest").style.display="none";
+                document.getElementById("grequest").style.display="block";
+
+            }
+            
+            
+            
+            async function add_plan(btn){
+                var plan_name = document.getElementById("plan_name").value;
+                var plan_amount = document.getElementById("plan_amount").value;
+                var plan_cur = document.getElementById("plan_cur").value;
+                var plan_user_type = document.getElementById("plan_user_type").value;
+                var plan_interval = document.getElementById("plan_interval").value;
+                var plan_platform = document.getElementById("plan_platform").value;
+                var plan_desc = document.getElementById("plan_desc").value;
+                  
+                if(plan_name.length == 0){
+                    alert("Enter the Plan Name")
+                    document.getElementById("plan_name").focus();
+                } 
+                
+                else if(plan_amount.length == 0){
+                    alert("Enter the Plan Amount")
+                    document.getElementById("plan_amount").focus();
+                }
+                else if(plan_cur == "0"){
+                    alert("Select the currency for this plan")
+                    document.getElementById("plan_cur").focus();
+                }
+                else if(plan_platform == "0"){
+                    alert("Select the Platform for this plan")
+                    document.getElementById("plan_platform").focus();
+                }
+                
+                else if(plan_user_type == "0"){
+                    alert("Select the user type")
+                    document.getElementById("plan_user_type").focus();
+                }
+                
+                else if(plan_interval == "0"){
+                    alert("Select the Interval for this plan")
+                    document.getElementById("plan_interval").focus();
+                }
+                else if(plan_desc.length == 0){
+                    alert("Write a short description of this plan")
+                    document.getElementById("plan_desc").focus();
+                }
+                
+                else{
+                    btn.innerHTML="Please wait...";
+                    btn.setAttribute("disabled", "disabled");
+            
+                    var formdata = new FormData();
+                        formdata.append("name", plan_name);
+                        formdata.append("amount", plan_amount);
+                        formdata.append("platform", plan_platform);
+                        formdata.append("description", plan_desc);
+                        formdata.append("currency", plan_cur);
+                        formdata.append("userPlanType", plan_user_type);
+                        formdata.append("interval", plan_interval);
+                        
+                        var requestOptions = {
+                          method: 'POST',
+                          body: formdata,
+                            headers: {
+                            "Authorization": `Bearer ${ADMIN_TOKEN}`
+                          },
+                          redirect: 'follow'
+                        };
+    
+                   await fetch(base_url+"/v1/admin/plans", requestOptions)
+                    .then(response => response.json())
+                    .then(result => {
+                        
+                        if(result.status == true){
+                             Swal.fire({
+                            title: "Good Job!",
+                            text: "Plan Added Successfully",
+                            icon: "success"
+                        });
+                        }
+                        else{
+                             Swal.fire({
+                            title: "Failed!",
+                            text: result.message,
+                            icon: "error"
+                        });
+                        }
+                       
+                        
+                })
+                .catch(error => {
+                    console.log('error', error);
+                    alert("Sorry an internal error occured. Please try again later!")
+                    
+                }
+                );
+                    btn.innerHTML="add plan";
+                    btn.removeAttribute("disabled");
+                    document.getElementById("add_plan_modal").style.display="none";
+                    document.getElementById("add_plan_modal").style.visibility="hidden";
+                    getplans();
+            }
+        }
+        
+        
+         async function edit_plan(btn, id){
+                var plan_name = document.getElementById("plan_name"+id).value;
+                var plan_amount = document.getElementById("plan_amount"+id).value;
+                var plan_cur = document.getElementById("plan_cur"+id).value;
+                var plan_user_type = document.getElementById("plan_user_type"+id).value;
+                var plan_interval = document.getElementById("plan_interval"+id).value;
+                var plan_platform = document.getElementById("plan_platform"+id).value;
+                var plan_desc = document.getElementById("plan_desc"+id).value;
+                var plan_id = document.getElementById("plan_id"+id).value;
+                  
+                if(plan_name.length == 0){
+                    alert("Enter the Plan Name")
+                    document.getElementById("plan_name"+id).focus();
+                } 
+                
+                else if(plan_amount.length == 0){
+                    alert("Enter the Plan Amount")
+                    document.getElementById("plan_amount"+id).focus();
+                }
+                else if(plan_desc.length == 0){
+                    alert("Write a short description of this plan")
+                    document.getElementById("plan_desc"+id).focus();
+                }
+                
+                else{
+                    btn.innerHTML="Please wait...";
+                    btn.setAttribute("disabled", "disabled");
+            
+                    var formdata = new FormData();
+                        formdata.append("name", plan_name);
+                        formdata.append("amount", plan_amount);
+                        formdata.append("platform", plan_platform);
+                        formdata.append("description", plan_desc);
+                        formdata.append("currency", plan_cur);
+                        formdata.append("userPlanType", plan_user_type);
+                        formdata.append("interval", plan_interval);
+                        
+                        var requestOptions = {
+                          method: 'PATCH',
+                          body: formdata,
+                            headers: {
+                            "Authorization": `Bearer ${ADMIN_TOKEN}`
+                          },
+                          redirect: 'follow'
+                        };
+    
+                   await fetch(base_url+"/v1/admin/plans/"+plan_id, requestOptions)
+                    .then(response => response.json())
+                    .then(result => {
+                        
+                        if(result.status == true){
+                             Swal.fire({
+                            title: "Good Job!",
+                            text: "Plan Edited Successfully",
+                            icon: "success"
+                        });
+                        }
+                        else{
+                             Swal.fire({
+                            title: "Failed!",
+                            text: result.message,
+                            icon: "error"
+                        });
+                        }
+                       
+                        
+                })
+                .catch(error => {
+                    console.log('error', error);
+                    alert("Sorry an internal error occured. Please try again later!")
+                    
+                }
+                );
+                    btn.innerHTML="Edit plan";
+                    btn.removeAttribute("disabled");
+                    document.getElementById("ep_modal"+id).style.display="none";
+                    document.getElementById("ep_modal"+id).style.visibility="hidden";
+                    getplans();
+            }
+        }
+        
+        
+         async function reg_admin(btn){
+                var admin_fname = document.getElementById("admin_fname").value;
+                var admin_lname = document.getElementById("admin_lname").value;
+                var admin_email = document.getElementById("admin_email").value;
+                var admin_password = document.getElementById("admin_password").value;
+                const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                  
+                if(admin_fname.length == 0){
+                    alert("Enter the First Name of the Admin")
+                    document.getElementById("admin_fname").focus();
+                } 
+                
+                else if(admin_lname.length == 0){
+                    alert("Enter the Last Name of the Admin")
+                    document.getElementById("admin_lname").focus();
+                }
+                else if(admin_email.length == 0){
+                    alert("Please enter the Admin Email Address");
+                    document.getElementById("admin_email").focus();
+                }
+                else if(!(emailRegex.test(admin_email))){
+                    alert("Invalid email! Please enter a valid Admin Email Address");
+                    document.getElementById("admin_email").focus();
+                }
+                else if(admin_password.length == 0){
+                    alert("Please Enter the Admin Password")
+                    document.getElementById("admin_password").focus();
+                }
+                 else if(admin_password.length < 8){
+                    alert("Please enter a strong Admin password not less than 8 characters")
+                    document.getElementById("admin_password").focus();
+                }
+                
+                else{
+                    btn.innerHTML="Please wait...";
+                    btn.setAttribute("disabled", "disabled");
+            
+                    var formdata = new FormData();
+                        formdata.append("firstname", admin_fname);
+                        formdata.append("lastname", admin_lname);
+                        formdata.append("email", admin_email);
+                        formdata.append("password", admin_password);
+                        
+                        var requestOptions = {
+                          method: 'POST',
+                          body: formdata,
+                            headers: {
+                            "Authorization": `Bearer ${ADMIN_TOKEN}`
+                          },
+                          redirect: 'follow'
+                        };
+    
+                   await fetch(base_url+"/v1/admin/sub-admin/register", requestOptions)
+                    .then(response => response.json())
+                    .then(result => {
+                        
+                        if(result.status == true){
+                             Swal.fire({
+                            title: "Successful!",
+                            text: "Admin Regsitered successfully",
+                            icon: "success"
+                        });
+                        }
+                        else{
+                             Swal.fire({
+                            title: "Failed!",
+                            text: result.message,
+                            icon: "error"
+                        });
+                        }
+                       
+                        
+                })
+                .catch(error => {
+                    console.log('error', error);
+                    alert("Sorry an internal error occured. Please try again later!")
+                    
+                }
+                );
+                    btn.innerHTML="Register Admin";
+                    btn.removeAttribute("disabled");
+            }
+        }
+      </script>
+      
+      <script>
+        async function getplans(){
+             var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+
+        await fetch(base_url+"/v1/admin/plans/", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+             var table = document.getElementById("plans_tbody");
+            plans = Object.values(result.data.data);
+            console.log(plans);
+            table.innerHTML = "";
+            const plan_interval = ["Yearly", "Monthly", "Weekly", "Daily"];
+            const plan_ty = ["PAYSTACK", "STRIPE"];
+            const plan_currency = ["NGN","USD","EUR"];
+            const plan_user = ["Landlord", "Tenant"];
+            for(var i = 0; i < plans.length; i++){
+                
+                table.innerHTML += `<tr class="intro-x">
+                <td class="text-center">${plans[i].name}</td>
+                <td class="text-center">${plans[i].currency}</td>
+                '<td class="text-center">${plans[i].amount.toLocaleString("en")}</td>
+                <td><a class="font-medium whitespace-nowrap"> 
+                    <div class="flex justify-center text-success"> 
+                    <i data-lucide="check-square" class="w-4 h-4 mr-2"></i>${plans[i].interval}</div></a>
+                                                <div class="text-slate-500 text-xs whitespace-nowrap mt-0.5">${plans[i].platform}</div></td>
+                <td class="">${plans[i].user_plan_type}</td>
+                <td class="text-center">${plans[i].description}</td>
+                <td class="w-40"><button class="btn btn-success text-light" data-tw-toggle="modal" data-tw-target="#ep_modal${plans[i].id}">Edit</button>
+                                               <button class="btn btn-danger text-light" onclick='delete_plan("${plans[i].id}", this)'>Delete</button></td> 
+                                               </tr>
+                                               
+            <div id="ep_modal${plans[i].id}" class="modal" data-tw-backdrop="static" tabindex="-1" aria-hidden="true">
+                 <div class="modal-dialog">
+                     <div class="modal-content">
+                         <!-- BEGIN: Modal Header -->
+                         <div class="modal-header">
+                             <h2 class="font-medium text-base mr-auto">EDIT PLAN</h2>
+                            
+                         </div> <!-- END: Modal Header -->
+                         <!-- BEGIN: Modal Body -->
+                         <div class="modal-body grid grid-cols-12 gap-4 gap-y-3">
+                             <div class="col-span-12 sm:col-span-6"> <label for="plan_name" class="form-label">Plan Name</label>
+                             <input id="plan_name${plans[i].id}" type="text" class="form-control" value="${plans[i].name}"> </div>
+                             <input id="plan_id${plans[i].id}" type="hidden" value="${plans[i].id}"> 
+                              <div class="col-span-12 sm:col-span-6"> <label for="plan_cur" class="form-label">Currency</label> 
+                                           <select id="plan_cur${plans[i].id}" class="form-select">
+                                           <option value="${plans[i].currency}">${plans[i].currency}</option>
+                                     
+                                 </select> </div>
+                             
+                             <div class="col-span-12 sm:col-span-6"> <label for="plan_amount" class="form-label">Amount</label>
+                             <input id="plan_amount${plans[i].id}" type="number" class="form-control" value="${plans[i].amount}"> </div>
+                             
+                                   
+                                 
+                                 <div class="col-span-12 sm:col-span-6"> <label for="plan_platform" class="form-label">Platform</label>
+                                 <select id="plan_platform${plans[i].id}" class="form-select">
+                                     <option value="${plans[i].platform}">${plans[i].platform}</option>
+                                 </select> </div>
+                                 
+                                 <div class="col-span-12 sm:col-span-6"> <label for="plan_user_type" class="form-label">User Plan Type</label> 
+                                 <select id="plan_user_type${plans[i].id}" class="form-select">
+                                 <option value="${plans[i].user_plan_type}">${plans[i].user_plan_type}</option>
+                                 </select> </div>
+                                 
+                                 <div class="col-span-12 sm:col-span-6"> <label for="plan_interval" class="form-label">Plan Interval</label> 
+                                 <select id="plan_interval${plans[i].id}" class="form-select">
+                                     <option value="${plans[i].interval}">${plans[i].interval}</option>
+                                     
+                                 </select> </div>
+                                 
+                                   <div class="col-span-12"> <label for="plan_desc" class="form-label">Plan Description</label>
+                             <input id="plan_desc${plans[i].id}" type="text" class="form-control" value="${plans[i].description}"> </div>
+                             
+                                  
+                         </div> <!-- END: Modal Body -->
+                         <!-- BEGIN: Modal Footer -->
+                         <div class="modal-footer"> <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-20 mr-1">Cancel</button> 
+                         <button type="button" class="btn btn-primary w-20" onclick='edit_plan(this, "${plans[i].id}");'>Edit</button> </div>
+                     </div>
+             </div>
+             </div>`;
+             for(var a = 0; a < plan_currency.length; a++){
+                 if(plan_currency[a].toLowerCase() != plans[i].currency.toLowerCase()){
+                     document.getElementById("plan_cur"+plans[i].id).innerHTML += `<option value="${plan_currency[a]}">${plan_currency[a]}</option>`
+                 }
+             }
+             
+             for(var b = 0; b<plan_user.length; b++){
+                 
+                 if(plan_ty[b].toLowerCase() != plans[i].currency.toLowerCase()){
+                     document.getElementById("plan_user_type"+plans[i].id).innerHTML += `<option value="${plan_user[b]}">${plan_user[b]}</option>`
+                 }
+             }
+             
+             for(var c = 0; c<plan_ty.length; c++){
+                 if(plan_ty[c].toLowerCase() != plans[i].platform.toLowerCase()){
+                     document.getElementById("plan_platform"+plans[i].id).innerHTML += `<option value="${plan_ty[c]}">${plan_ty[c]}</option>`
+                 }
+             }
+             
+             for(var d = 0; d<plan_interval.length; d++){
+                 if(plan_interval[d].toLowerCase() != plans[i].interval.toLowerCase()){
+                     document.getElementById("plan_interval"+plans[i].id).innerHTML += `<option value="${plan_interval[d]}">${plan_interval[d]}</option>`
+                 }
+             }
+                                           
+            }
+            })
+            
+        .catch(error => console.log('error', error));
+        }
+     getplans();
+     
+     async function delete_plan(id, btn){
+         btn.innerHTML="Please wait...";
+         btn.setAttribute("disabled", "disabled");
+         var requestOptions = {
+          method: 'DELETE',
+          redirect: 'follow'
+        };
+
+        await fetch(base_url+"/v1/admin/plans/"+id, requestOptions)
+          .then(response => response.text())
+          .then(result => 
+          {
+               if(result.status == true){
+                             Swal.fire({
+                            title: "Successful!",
+                            text: "Admin Deleted successfully",
+                            icon: "success"
+                        });
+                        }
+                        else{
+                             Swal.fire({
+                            title: "Failed!",
+                            text: result.message,
+                            icon: "error"
+                        });
+                        }
+          })
+          .catch(error => console.log('error', error));
+          btn.innerHTML="Delete";
+                    btn.removeAttribute("disabled");
+             }
+             
+             
+     async function fetchProperties() {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                "Authorization": `Bearer ${ADMIN_TOKEN}`
+            },
+        };
+
+        await fetch(base_url + "/v1/property/", requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                var properties = Object.values(result.data);
+                var count = 0;
+                var ver_prop_count = 0;
+                    properties.forEach((property, index) => {
+                        count++;
+                        if (property.is_verified) ver_prop_count++;
+                    });
+
+                    // Update property counts
+                    document.getElementById("num_prop").innerHTML = count;
+                    document.getElementById("num_ver_prop").innerHTML = ver_prop_count;
+            })
+            .catch(error => console.log('error', error));
+    }
+
+    // Fetch and display properties when the page loads
+    window.onload = fetchProperties;
+    
+    
+    async function payments(){
+             var requestOptions = {
+            method: 'GET',
+            headers: {
+                "Authorization": `Bearer ${ADMIN_TOKEN}`
+              },
+            redirect: 'follow'
+        };
+
+            var p_amt_t = 0;
+            var pp_amt_t = 0;
+        await fetch(base_url+"/v1/transaction/", requestOptions)
+        .then(response => response.json())
+        .then(async(result2) => {
+             var table = document.getElementById("all_payments_tbody");
+            var payment_details = Object.values(result2.data);
+            console.log(payment_details);
+            table.innerHTML = "";
+            var count = 0;
+            var p_fullname;
+            var p_email;
+            for(var i = 0; i < payment_details.length; i++){
+                var p_user = payment_details[i]["user_id"];
+                var p_desc = payment_details[i]["description"];
+                var p_amt = payment_details[i]["amount"];
+                var p_tref = payment_details[i]["trx_reference"];
+                var p_status = payment_details[i]["status"];
+                var p_platform = payment_details[i]["platform"];
+                var p_date = payment_details[i]["created_at"];
+                var date = new Date(p_date);
+                p_amt_t+= p_amt;
+                count++;
+
+                
+                // Format date to Day, Month (word), Year
+                var formatted_p_date = date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear();
+                var requestOptions = {
+                  method: 'GET',
+                  headers: {
+                "Authorization": `Bearer ${ADMIN_TOKEN}`
+              },
+                  redirect: 'follow'
+                };
+                
+                await fetch(base_url+"/v1/user/"+p_user, requestOptions)
+                  .then(response => response.json())
+                  .then(result => {
+                      if(result.status == true){
+                          p_fullname = result.data.firstname + " " + result.data.lastname;
+                          p_email = result.data.email;
+                          table.innerHTML += '<tr class="intro-x">'+ 
+                          '<td>' + p_fullname.toUpperCase() + ' <br> <strong>'+ p_email +'</strong></td>' + 
+                        '<td class="w-20">' + p_tref.toUpperCase() + '</td>' + 
+                        '<td>' + 
+                            '<div class="font-weight-bold w-25">' + p_desc + '</div>' + 
+                        '</td>' + 
+                        '<td>' + 
+                            '<div class="font-weight-bold text-center"> ₦' + p_amt + '</div>' + 
+                        '</td>' + 
+                        '<td>' + 
+                            '<div class="font-weight-bold text-center">' + p_platform.toUpperCase() + '</div>' + 
+                        '</td>' +  
+                        '<td>' + 
+                            '<div class="font-weight-bold text-center">' + formatted_p_date + '</div>' + 
+                        '</td>' + 
+                        '<td class="text-center" id="p_status_div'+i+'"></td>' + 
+                        '</tr>';
+                        
+                        
+                        // Status handling
+                        if(p_status == "pending"){
+                            document.getElementById("p_status_div"+i).innerHTML= '<div class="d-flex justify-content-center text-info"> PENDING </div>';
+                            pp_amt_t+=p_amt;
+                        } else if(p_status == "success"){
+                            document.getElementById("p_status_div"+i).innerHTML = '<div class="d-flex justify-content-center text-success">SUCCESS </div>';
+                        }
+                        else{
+                            document.getElementById("p_status_div"+i).innerHTML= '<div class="d-flex justify-content-center text-info"> FAILED </div>';
+    
+                        }
+                        }
+                        else{
+                            table.innerHTML += '<tr class="intro-x">'+ 
+                          '<td>--- <br> <strong>---</strong></td>' + 
+                        '<td class="w-20">' + p_tref.toUpperCase() + '</td>' + 
+                        '<td>' + 
+                            '<div class="font-weight-bold w-25">' + p_desc + '</div>' + 
+                        '</td>' + 
+                        '<td>' + 
+                            '<div class="font-weight-bold text-center"> ₦' + p_amt + '</div>' + 
+                        '</td>' + 
+                        '<td>' + 
+                            '<div class="font-weight-bold text-center">' + p_platform.toUpperCase() + '</div>' + 
+                        '</td>' +  
+                        '<td>' + 
+                            '<div class="font-weight-bold text-center">' + formatted_p_date + '</div>' + 
+                        '</td>' + 
+                        '<td class="text-center" id="p_status_div'+i+'"></td>' + 
+                        '</tr>';
+                        if(p_status == "AWAITING_ADMIN_APPROVAL"){
+                            document.getElementById("p_status_div"+i).innerHTML= '<div class="d-flex justify-content-center text-info"> PENDING </div>';
+                            pp_amt_t+=p_amt;
+                        } else if(p_status == "APPROVED"){
+                            document.getElementById("p_status_div"+i).innerHTML = '<div class="d-flex justify-content-center text-success"> <i class="bi bi-check-square-fill me-2"></i> APPROVED </div>';
+                        }
+                        else{
+                            document.getElementById("p_status_div"+i).innerHTML= '<div class="d-flex justify-content-center text-info"> USER ACTION </div>';
+    
+                        }
+                        }
+                        
+                          })
+                          .catch(error => console.log('error', error));
+            }
+        
+                        if(!count > 0){
+                            table.innerHTML += '<tr class="intro-x">'+
+                                                '<td colspan=7><div class="font-medium whitespace-nowrap">NO PAYMENTS YET!</div></td></tr>';
+                        }
+                              
+                    }).catch(error => console.log('error', error));
+                    $('#payments_table').DataTable();
+                     document.getElementById("total_sub").innerHTML = p_amt_t;
+                     document.getElementById("total_p_sub").innerHTML = pp_amt_t;
+    }
+    
+    payments();
+    
+    
+    
+    
+    
+ async function get_property_requests() {
+  const requestOptions = {
+    method: 'GET',
+    headers: {
+      "Authorization": `Bearer ${ADMIN_TOKEN}`
+    }
+  };
+
+  const response = await fetch(base_url + "/v1/property-interest/admin", requestOptions);
+  const result = await response.json();
+
+  const table = document.getElementById("prequest_tbody");
+  const requests = result.data;
+
+  table.innerHTML = ""; // Clear table before adding rows
+
+   requests.forEach((request, i) => {
+    const tenant = request.tenant;
+    const landlord = request.landlord;
+    const property = request.property;
+
+    const status = request.status;
+    const createdAt = new Date(request.created_at);
+    const formatted_p_date = `${createdAt.getDate()} ${createdAt.toLocaleString('default', { month: 'long' })} ${createdAt.getFullYear()}`;
+
+
+    // Table row content
+     table.innerHTML += `
+      <tr class="intro-x">
+        <td>
+          <a href="#" style="color:blue; text-decoration:underline"  onclick="viewTenantDetails('${tenant.id}')"  data-tw-toggle="modal" data-tw-target="#tenantDetailsModal">${tenant.firstname} ${tenant.lastname}</a>
+          <br><strong>${tenant.email}</strong>
+        </td>
+        <td>${property.property_name.toUpperCase()}</td>
+        <td>${property.property_type.toUpperCase()}</td>
+        <td>
+          <a href="#" style="color:blue; text-decoration:underline" onclick="viewLandlordDetails('${landlord.id}')" data-tw-toggle="modal" data-tw-target="#landlordDetailsModal">${landlord.firstname} ${landlord.lastname}</a>
+          <br><strong>${landlord.email}</strong>
+        </td>
+         <td>${formatted_p_date}</td>
+         <td class="text-center" id="p_status_div${i}"></td>
+         <td class="text-center" id="action_div${i}"></td>
+      </tr>
+    `;
+    const statusDiv = document.getElementById(`p_status_div${i}`);
+    const actionDiv = document.getElementById(`action_div${i}`);
+
+    if (status == "AWAITING_ADMIN_APPROVAL") {
+      statusDiv.innerHTML = `<div class="d-flex justify-content-center text-danger">PENDING</div>`;
+      actionDiv.innerHTML = `
+        <button class="btn btn-success btn-sm" onclick="approveRequest('${request.id}', this)">Approve</button>
+        <button class="btn btn-danger btn-sm" onclick="blockRequest('${request.id}', this)">Block</button>
+      `;
+    } else if (status == "AWAITING_LANDLORD_APPROVAL") {
+      statusDiv.innerHTML = `<div class="d-flex justify-content-center" style="color:orange;">Waiting for landlord</div>`;
+      actionDiv.innerHTML = `
+        <button class="btn btn-danger btn-sm" onclick="blockRequest('${request.id}', this)">Block</button>
+      `;
+    }
+     else if (status == "DECLINED_BY_ADMIN") {
+      statusDiv.innerHTML = `<div class="d-flex justify-content-center" style="color:red; font-weight:bold">BLOCKED BY ADMIN</div>`;
+     actionDiv.innerHTML = `<button class="btn btn-success btn-sm" onclick="approveRequest('${request.id}', this)">Approve</button>`;
+    }
+     else if (status == "DECLINED_BY_LANDLORD"){
+      statusDiv.innerHTML = `<div class="d-flex justify-content-center" style="color:red;">DECLINED BY LANDLORD</div>`;
+       actionDiv.innerHTML = `
+         <button class="btn btn-success btn-sm" onclick="approveRequest('${request.id}', this)">Approve</button>
+      `;
+    } 
+    else {
+      statusDiv.innerHTML = `<div class="d-flex justify-content-center" style="color:green;">APPROVED</div>`;
+      actionDiv.innerHTML = `
+        <button class="btn btn-danger btn-sm" onclick="blockRequest('${request.id}', this)">Block</button>
+      `;
+    } 
+
+  });
+
+  if (requests.length === 0) {
+    table.innerHTML = `<tr><td colspan="6" class="text-center">No property requests yet!</td></tr>`;
+  }
+  $('#prequest_table').DataTable();
+}
+
+async function viewTenantDetails(tenantId) {
+  const requestOptions = {
+    method: 'GET',
+    headers: {
+      "Authorization": `Bearer ${ADMIN_TOKEN}`
+    }
+  };
+
+  const response = await fetch(`${base_url}/v1/user/${tenantId}`, requestOptions);
+  const result = await response.json();
+            var user = result.data;
+            var tenant = user.tenant;
+            var pguarantor = user.guarantor;
+            var req_link = `https://africneibor.com/account/guarantor?tenant=${tenantId}&name=${user.firstname} ${user.middlename} ${user.lastname}`;
+  
+  if(user.image != null){
+                    document.getElementById('userImage').src = user.image;
+                }
+                else{
+                    document.getElementById('userImage').src = "nopic.jpg";
+                }
+
+            var tenantFname = `${user.firstname} ${user.lastname}`;
+            document.getElementById('fullName').textContent = `${user.firstname} ${user.middlename} ${user.lastname}`;
+            document.getElementById('email').textContent = user.email ? user.email : '---';
+            document.getElementById('phone').textContent = user.phone_no ? user.phone_no : '---';
+            document.getElementById('dob').textContent = user.dob ? user.dob : '---';
+            document.getElementById('state').textContent = user.state ? user.state : '---';
+            document.getElementById('country').textContent = user.country ? user.country : '---';
+            document.getElementById('city').textContent = user.city ? user.city : '---';
+            document.getElementById('address').textContent = user.address ? user.address : '---';
+            document.getElementById('religion').textContent = tenant.religion ? tenant.religion : '---';
+            document.getElementById('rel_status').textContent = tenant.relationship_status ? tenant.relationship_status : '---';
+            
+
+            // Tenant-specific details
+            document.getElementById('occupation').textContent = tenant.occupation ? tenant.occupation : '---';
+            document.getElementById('salary').textContent = `$${tenant.monthly_salary}`;
+            document.getElementById('criminalRecord').textContent = tenant.has_criminal_record ? 'Yes' : 'No';
+             document.getElementById('pfam').textContent = tenant.no_of_children +" Children, " + tenant.no_of_wives + " Spouse";
+            document.getElementById('motherName').textContent = `${tenant.mother_name.firstname} ${tenant.mother_name.lastname}`;
+            document.getElementById('fatherName').textContent = `${tenant.father_name.firstname} ${tenant.father_name.lastname}`;
+            document.getElementById('pMotherName').textContent = `${tenant.paternal_mother_name.firstname} ${tenant.paternal_mother_name.lastname}`;
+            document.getElementById('mMotherName').textContent = `${tenant.maternal_mother_name.firstname} ${tenant.maternal_mother_name.lastname}`;
+            document.getElementById('pFatherName').textContent = `${tenant.paternal_father_name.firstname} ${tenant.paternal_father_name.lastname}`;
+            document.getElementById('mFatherName').textContent = `${tenant.maternal_father_name.firstname} ${tenant.maternal_father_name.lastname}`;
+            if(tenant.doctor_name != null){
+            document.getElementById('doctorName').textContent = tenant.doctor_name.firstname ? tenant.doctor_name.firstname : '---';
+            }
+            else{
+                 document.getElementById('doctorName').textContent = 'NOT SET';
+            }
+            document.getElementById('doctorPhone').textContent = tenant.doctor_phone ? tenant.doctor_phone : '---';
+            document.getElementById('permanentAddress').textContent = tenant.permanent_address ? tenant.permanent_address : '---';
+
+            // Populate Education Info
+            if(tenant.education != null){
+            if(tenant.education.length != 0){
+            const educationList = document.getElementById('educationInfo');
+            educationList.innerHTML = ''; // Clear previous content
+            tenant.education.forEach(edu => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <strong>Institution:</strong> ${edu.institution}<br>
+                    <strong>Degree:</strong> ${edu.degree}<br>
+                    <strong>Field of Study:</strong> ${edu.fieldOfStudy}<br>
+                    <strong>Start Date:</strong> ${edu.startDate}<br>
+                    <strong>End Date:</strong> ${edu.endDate}
+                `;
+                educationList.appendChild(listItem);
+            });
+            }
+            }
+            if(tenant.jobs != null){
+            if(tenant.jobs.length != 0){
+            // Populate Employment Info
+            const employmentList = document.getElementById('employmentInfo');
+            employmentList.innerHTML = ''; // Clear previous content
+            tenant.jobs.forEach(job => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <strong>Title:</strong> ${job.title}<br>
+                    <strong>Company:</strong> ${job.companyName}<br>
+                    <strong>Start Date:</strong> ${job.startDate}<br>
+                    <strong>References:</strong> ${job.references.map(ref => `${ref.name} (${ref.phone})`).join(', ')}
+                `;
+                employmentList.appendChild(listItem);
+            });
+            }
+            }
+            
+            if(pguarantor != null){
+            // Populate Employment Info
+            const guarantorList = document.getElementById('guarantorList');
+            
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <strong>Guarantor Name:</strong> ${pguarantor.name}<br>
+                    <strong>Email Address:</strong> ${pguarantor.email}<br>
+                    <strong>Phone:</strong> ${pguarantor.phone}<br>
+                    <strong>Address:</strong> ${pguarantor.address}<br>
+                    <strong>Work Details:</strong> ${pguarantor.place_of_work}<span style="color:red"> ($${pguarantor.average_income_a_year} earned per year)</span><br>
+                    <strong>Relationship with Tenant:</strong> ${pguarantor.relationship_with_tenant}<br>
+                `;
+                guarantorList.appendChild(listItem);
+            
+            }
+            else{
+                guarantorList.innerHTML=`<li style="color:red">NO GUARANTOR APPROVED YET</li>`;
+            }
+            
+            if(tenant.has_criminal_record == true){
+                document.getElementById('crime_div').innerHTML = '<p class="font-weight-bold"><strong>Crime commited: </strong><span>'+ tenant.crime_committed +'</span></p>'+
+                                                                     '<p class="font-weight-bold"><strong>Conviction nature: </strong><span>'+ tenant.conviction_nature
+ +'</span></p>'+
+                                                                     '<p class="font-weight-bold"><strong>Jailed: </strong><span>'+ tenant.jail_time +'</span></p>'
+            }
+            else{
+                document.getElementById('crime_div').innerHTML = "";
+            }
+            if(user.is_active){
+                document.getElementById('ver').style.display="block";
+                document.getElementById('notver').style.display="none";
+            }
+            else{
+                document.getElementById('ver').style.display="none";
+                document.getElementById('notver').style.display="block";
+            }
+           document.getElementById('reqbuttons').innerHTML = `<a href="${user.tenant.proof_of_salary}" target="_blank" class="btn btn-primary py-1 px-4">View Salary Proof</a>`
+           if(user.guarantor == null){
+              document.getElementById('reqbuttons').innerHTML += `<button class="btn btn-primary py-1 px-4" onclick='guarantor_request("${tenantId}","${tenantFname}","${user.email}", "${req_link}", this)';>Request Guarantor</button>`
+}
+  document.getElementById('tenantDetailsModal').style.display="block";
+}
+
+async function viewLandlordDetails(landlordId) {
+  const requestOptions = {
+    method: 'GET',
+    headers: {
+      "Authorization": `Bearer ${ADMIN_TOKEN}`
+    }
+  };
+
+  const response = await fetch(`${base_url}/v1/user/${landlordId}`, requestOptions);
+  const landlord = await response.json();
+
+  document.getElementById('landlordModalBody').innerHTML = `
+    <p><strong>Name:</strong> ${landlord.data.firstname} ${landlord.data.lastname}</p>
+    <p><strong>Email:</strong> ${landlord.data.email}</p>
+    <p><strong>Phone:</strong> ${landlord.data.phone_no}</p>
+    <p><strong>Address:</strong> ${landlord.data.address}</p>
+  `;
+
+  const landlordModal = new bootstrap.Modal(document.getElementById('landlordDetailsModal'));
+  landlordModal.show();
+}
+
+
+async function guarantor_request(tenant_id, name, email, link, btn) {
+    btn.innerHTML="Sending...";
+                btn.setAttribute("disabled", "disabled");
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      "Authorization": `Bearer ${ADMIN_TOKEN}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({userId:tenant_id, link:link })
+  };
+
+  // Make the request and handle response with promises
+  await fetch(`${base_url}/v1/guarantor/request`, requestOptions)
+    .then(response => response.json())
+    .then(result => {
+      // Check if the request was successful
+      if (result.status === true) {
+       alert("Guarantor request sent successfully to the User.");
+      } else {
+        alert("Failed to send guarantor request.");
+      }
+    })
+    .catch(error => {
+      // Handle fetch errors (network issues or unexpected problems)
+      alert("An unexpected error occurred. Please try again later.");
+      console.error('Error:', error);
+    });
+     btn.innerHTML="Request Guarantor";
+                          btn.removeAttribute("disabled");
+}
+
+// Fetch property requests on page load
+get_property_requests();
+
+
+async function get_g_requests() {
+  const requestOptions = {
+    method: 'GET',
+    headers: {
+      "Authorization": `Bearer ${ADMIN_TOKEN}`
+    }
+  };
+
+  const response = await fetch(base_url + "/v1/guarantor/request", requestOptions);
+  const result = await response.json();
+  const table = document.getElementById("grequest_tbody");
+  
+  const requests = result.data
+
+  
+requests.forEach((request, i) => {
+    const guarantor = request.guarantor;
+  const guser = request.user;
+  const requestId = request.id
+const status = request.status;
+if((guarantor != null)){
+    // Table row content
+     table.innerHTML += `
+      <tr class="intro-x">
+      <td>${guarantor.name.toUpperCase()}</td>
+      <td>
+          <span>${guarantor.phone}</span>
+          <br><strong>${guarantor.email}</strong>
+        </td>
+        
+        <td>
+          <span>${guarantor.place_of_work.toUpperCase()}</span>
+          <br><strong style="color:red">${guarantor.average_income_a_year} per year </strong>
+        </td>
+        <td>${guarantor.relationship_with_tenant}</td>
+        <td>
+          <a href="#" style="color:blue; text-decoration:underline"  onclick="viewTenantDetails('${guser.id}')"  data-tw-toggle="modal" data-tw-target="#tenantDetailsModal">${guser.firstname} ${guser.lastname}</a>
+          <br><strong>${guser.email}</strong>
+        </td>
+         <td class="text-center" id="g_status_div${i}"></td>
+         <td class="text-center" id="gaction_div${i}"></td>
+      </tr>
+    `;
+    const statusDiv = document.getElementById(`g_status_div${i}`);
+    const actionDiv = document.getElementById(`gaction_div${i}`);
+
+    if (status == "awaiting_approval") {
+      statusDiv.innerHTML = `<div class="d-flex justify-content-center text-danger">PENDING</div>`;
+      actionDiv.innerHTML = `
+        <button class="btn btn-success btn-sm" onclick="approve_g('${requestId}', this)">Approve</button>
+        <button class="btn btn-danger btn-sm" onclick="delete_g('${requestId}', this)">Delete</button>
+      `;
+    } else{
+      statusDiv.innerHTML = `<div class="d-flex justify-content-center text-success">APPROVED</div>`;
+      actionDiv.innerHTML = `
+        <button class="btn btn-danger btn-sm" onclick="delete_g('${requestId}', this)">Delete</button>
+      `;
+    }
+}
+});
+
+  if((requests.length == 0)) {
+    table.innerHTML = `<tr><td colspan="7" class="text-center">No Guarantor request to show!</td></tr>`;
+  }
+   $('#grequest_table').DataTable();
+}
+  
+  get_g_requests(); 
+  
+  
+  async function approve_g(requestId, btn) {
+      if (confirm("This action cannot be reversed! Confirm if you want to approve this Guarantor") == true) {
+      btn.innerHTML="wait...";
+                    btn.setAttribute("disabled", "disabled");
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      "Authorization": `Bearer ${ADMIN_TOKEN}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ approved: true })
+  };
+
+   await fetch(`${base_url}/v1/guarantor/request/${requestId}/status`, requestOptions).then(response => response.json())
+                    .then(result2 => {
+                        
+                        if(result2.status == true){
+                             Swal.fire({
+                            title: "Guarantor Approved!",
+                            text: "You have Approved this Guarantor for the user. Remember to visit the property request for thus user and review again!",
+                            icon: "success"
+                        });
+                        }
+                        else{
+                             Swal.fire({
+                            title: "Failed!",
+                            text: result.message,
+                            icon: "error"
+                        });
+                        }
+                       
+                        
+                })
+                .catch(error => {
+                    console.log('error', error);
+                    alert("Sorry an internal error occured. Please try again later!");
+                });
+                btn.innerHTML="Approve";
+                    btn.removeAttribute("disabled");
+  get_g_requests(); // Refresh the table
+  }
+}
+
+async function delete_g(requestId, btn) {
+    if (confirm("This action cannot be reversed! Confirm if you want to block this Property Request") == true) {
+      btn.innerHTML="wait...";
+     btn.setAttribute("disabled", "disabled");
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      "Authorization": `Bearer ${ADMIN_TOKEN}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ approved: false })
+  };
+
+   await fetch(`${base_url}/v1/property-interest/${requestId}/status/admin`, requestOptions).then(response => response.json())
+                    .then(result2 => {
+                        
+                        if(result2.status == true){
+                             Swal.fire({
+                            title: "Property Request Blocked!",
+                            text: "You have successfully Blocked this Request as the Admin",
+                            icon: "success"
+                        });
+                        }
+                        else{
+                             Swal.fire({
+                            title: "Failed!",
+                            text: result.message,
+                            icon: "error"
+                        });
+                        }
+                       
+                        
+                })
+                .catch(error => {
+                    console.log('error', error);
+                    alert("Sorry an internal error occured. Please try again later!")
+                    
+                });
+                btn.innerHTML="Delete";
+                    btn.removeAttribute("disabled");
+  get_property_requests(); // Refresh the table
+    }
+}
+
+
+
+  async function approveRequest(requestId, btn) {
+      if (confirm("This action cannot be reversed! Confirm if you want to Approve this Property Request") == true) {
+      btn.innerHTML="wait...";
+                    btn.setAttribute("disabled", "disabled");
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      "Authorization": `Bearer ${ADMIN_TOKEN}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ approved: true })
+  };
+
+   await fetch(`${base_url}/v1/property-interest/${requestId}/status/admin`, requestOptions).then(response => response.json())
+                    .then(result2 => {
+                        
+                        if(result2.status == true){
+                             Swal.fire({
+                            title: "Property Request Approved!",
+                            text: "You have Approved this Property Request for the Tenant. We have fowarded to the Landlord Dashboard for Approval, Reach out to the Landlord too",
+                            icon: "success"
+                        });
+                        }
+                        else{
+                             Swal.fire({
+                            title: "Failed!",
+                            text: result.message,
+                            icon: "error"
+                        });
+                        }
+                       
+                        
+                })
+                .catch(error => {
+                    console.log('error', error);
+                    alert("Sorry an internal error occured. Please try again later!");
+                });
+                btn.innerHTML="Approve";
+                    btn.removeAttribute("disabled");
+  get_property_requests(); // Refresh the table
+  }
+}
+
+
+ async function get_subadmin() {
+     
+  const requestOptions = {
+    method: 'GET',
+    headers: {
+      "Authorization": `Bearer ${ADMIN_TOKEN}`
+    }
+  };
+var table = document.getElementById("subadmin_tbody");
+
+table.innerHTML="";
+
+   await fetch(`${base_url}/v1/admin/users/sub-admin/`, requestOptions).then(response => response.json())
+                    .then(result2 => {
+                         items = Object.values(result2.data);
+                         for(var i = 0; i < items.length; i++){
+                        table.innerHTML += `
+      <tr class="intro-x">
+      <td>${items[i].firstname.toUpperCase()}</td>
+         <td>${items[i].lastname.toUpperCase()}</td>
+         <td>${items[i].email.toUpperCase()}</td>
+      </tr>`;
+                         }       
+                        
+                })
+                .catch(error => {
+                    console.log('error', error);
+                });
+               
+}
+get_subadmin();
+        </script>
+        <!-- END: JS Assets-->
+    </body>
+</html>

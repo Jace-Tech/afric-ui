@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFRICNEIBOR - LANDLORDS</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+
+    <style>
+        .navbar-brand img {
+            width: 70px; /* Adjust width to make the logo smaller */
+            margin-right: 15px; /* Bring logo inside */
+        }
+        .modal-body {
+            max-height: 70vh; /* Limits height to 70% of the viewport */
+            overflow-y: auto; /* Enables vertical scrolling */
+        }
+        
+        .card {
+            margin-bottom: 20px; /* Adds spacing between cards */
+        }
+        
+        .card-body h6 {
+            margin-bottom: 15px; /* Adds spacing below the heading */
+        }
+        
+        /* Optional: Customize the card border color and background color */
+        .card.border-primary {
+            border-color: #007bff !important; /* Bootstrap primary color */
+        }
+        
+        .card.border-success {
+            border-color: #28a745 !important; /* Bootstrap success color */
+        }
+        
+        .card.border-warning {
+            border-color: #ffc107 !important; /* Bootstrap warning color */
+        }
+        
+        .card.border-info {
+            border-color: #17a2b8 !important; /* Bootstrap info color */
+        }
+        
+        .card.border-danger {
+            border-color: #dc3545 !important; /* Bootstrap danger color */
+        }
+        h5{
+            text-transform:uppercase;
+        }
+        
+        /* Make image circular */
+        #userImage {
+            border-radius: 50%; /* Ensures the image is rounded like a profile picture */
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        
+        
+        /* Style the verified badge */
+        .verified-badge {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background-color: #28a745; /* Green background */
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .not-verified-badge {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background-color: red; /* red background */
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Optional: Bootstrap icon for checkmark (you need Bootstrap Icons for this) */
+        .verified-badge i {
+            font-size: 1rem;
+            margin-right: 5px;
+        }
+        
+        /* Adjust spacing around elements */
+        .card-body {
+            position: relative; /* Ensures badge stays positioned relative to this */
+        }
+    </style>
+    <script>
+         const base_url = "https://africneighbour.onrender.com/api";
+
+        var user_id = sessionStorage.getItem("user_id");
+        var admin_id = sessionStorage.getItem("admin_id");
+        var role = sessionStorage.getItem("role");
+        var a_status = sessionStorage.getItem("a_status");
+        var bearer = sessionStorage.getItem("bearer_token");
+          const ADMIN_TOKEN = bearer;
+        const user_details = {
+            "user_id": user_id
+        };
+        var display2 = "";
+        
+        
+       </script> 
+</head>
+<body>
+
+    <!-- Top Navigation Bar with Logo -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <!-- Logo -->
+            <a class="navbar-brand" href="../"> 
+                <img alt="africneibor - logo" src="../logo.png">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <!-- Home Button -->
+                    <li class="nav-item">
+                        <a class="btn btn-primary me-2" href="../">Home</a>
+                    </li>
+                    <!-- Return to Dashboard Button -->
+                    <li class="nav-item">
+                        <a class="btn btn-success" style="cursor:pointer" onclick="dashboard();">Return to Dashboard</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <h2 class="text-center">ALL AFRICNEIBOR LANDLORDS</h2>
+        <div class="col-12 col-lg-9" id="all_tenants">
+    <div class="row g-3">
+        <div class="col-12 mt-4">
+            <div class="overflow-auto mt-4">
+                <!-- Additional content goes here -->
+            </div>
+        </div>
+        <!-- END: Weekly Top Products -->
+    </div>
+</div>
+        <!-- Payments Table -->
+        <div class="table-responsive">
+            <table class="table table-striped table-hover mt-2" id="tenants_table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th class="text-nowrap">PICTURE</th>
+                        <th class="text-nowrap">NAME</th>
+                        <th class="text-nowrap">CONTACT</th>
+                        <th class="text-center text-nowrap">ACCOUNT STATUS</th>
+                        <th class="text-center text-nowrap">ACTION</th>
+                    </tr>
+                </thead>
+                <tbody id="all_tenants_tbody">
+                    <!-- Tenant data will be inserted here -->
+                </tbody>
+            </table>
+                      
+        </div>
+    </div>
+    
+     <!-- Modal -->
+<div class="modal fade" id="userDetailsModal" tabindex="-1" aria-labelledby="userDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userDetailsModalLabel"> LANDLORDS'S FULL DETAILS</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body overflow-auto" style="max-height: 70vh;">
+                <div class="row">
+                    <!-- User Basic Info -->
+                    <div class="col-md-12 mb-3">
+                        <div class="card bg-light border-primary">
+                            <div class="card-body">
+                                <img src="" id="userImage" class="img-fluid rounded-circle mb-3"  alt="User Image">
+                                <span class="verified-badge" id="ver" style="display:none;">
+                                    <i class="bi bi-check-circle-fill"></i> VERIFIED
+                                </span>
+                                <span class="not-verified-badge" id="notver" style="display:none">
+                                    <i class="bi bi-check-circle-fill"></i> NOT VERIFIED
+                                </span>
+                                <h5>Full Name: <span id="fullName"></span></h5>
+                                <p class="font-weight-bold"><strong>Email: </strong><span id="email"></span></p>
+                                <p class="font-weight-bold"><strong>Phone Number:</strong> <span id="phone"></span></p>
+                               <p class="font-weight-bold"><strong>Date of Birth:</strong> <span id="dob"></span></p>
+                                <p class="font-weight-bold"><strong>Resident Country: </strong><span id="country"></span></p>
+                                <p class="font-weight-bold"><strong>Resident State: </strong><span id="state"></span></p>
+                                <p class="font-weight-bold"><strong>Resident City: </strong><span id="city"></span></p>
+                                <p class="font-weight-bold"><strong>Address: </strong><span id="address"></span></p>
+                                 <p class="font-weight-bold"><strong>Number of Properties Owned:</strong> <span id="num"></span></p>
+                                  <p class="font-weight-bold"><strong>Business:</strong> <span id="bus_status"></span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tenant Details -->
+                    <div class="col-md-12 mb-3">
+                        <div class="card bg-light border-success">
+                            <div class="card-body">
+                                <h5>Business Information <span id="bus"></span></h5>
+                                <span class="verified-badge" id="bus_ver" style="display:none;">
+                                    <i class="bi bi-check-circle-fill"></i> VERIFIED
+                                </span>
+                                <span class="not-verified-badge" id="bus_notver" style="display:none">
+                                    <i class="bi bi-check-circle-fill"></i> NOT VERIFIED
+                                </span>
+                                
+                                
+                                <div id="bus_div"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Family Details -->
+                    <div class="col-md-12 mb-3">
+                        <div class="card bg-light border-warning">
+                            <div class="card-body">
+                                <h5>Properties Details</h5>
+                                <div id="prop_div"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script>
+        async function all_tenants(){
+             var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+
+        await fetch(base_url+"/v1/user?role=landlord", requestOptions)
+        .then(response => response.json())
+        .then(result2 => {
+             var table = document.getElementById("all_tenants_tbody");
+            var landlords = Object.values(result2.data);
+            console.log(result2);
+            table.innerHTML = "";
+            var count = 0;
+            for(var i = 0; i < landlords.length; i++){
+                var ten_img = landlords[i].image;
+                var ten_name = landlords[i].firstname + " " + landlords[i].lastname;
+                var ten_role = landlords[i].role;
+                var ten_status = landlords[i].is_active;
+                var ten_email = landlords[i].email;
+                var ten_tel = landlords[i].phone_no;
+                var ten_id = landlords[i].id;
+                var substat = landlords[i].has_subscribed;
+                if(ten_role == "landlord"){
+                table.innerHTML += '<tr class="intro-x">'+ 
+                        '<td class="">' + 
+                            '<div class="d-flex align-items-center">' + 
+                                '<div class="image-fit zoom-in pr-img" id="ten_img_div'+i+'"></div>' + 
+                            '</div>' + 
+                        '</td>' + 
+                        '<td>' + 
+                            '<div class="font-weight-bold">'+ten_name+'</div>' + 
+                        '</td>' + 
+                        '<td>' + 
+                            '<div class="font-small" id="ten_p'+i+'"></div>' + 
+                            '<div class="text-muted text-xs">'+ten_email+'</div>' + 
+                        '</td>' + 
+                        '<td id="ten_status_div'+i+'"></td>' + 
+                        '<td class="text-center w-40">' + 
+                            '<button type="button" class="btn btn-primary btn-sm text-light" onclick="get_a_tenant(\''+ten_id+'\', this);">View Landlord Details</button>' + 
+                        '</td>' + 
+                    '</tr>';
+                    
+                    count += 1;
+                    
+                    // Image handling
+                    if(ten_img == null){
+                        document.getElementById("ten_img_div"+i).innerHTML="<span class='text-danger'>NO PICTURE YET</span>";
+                    } else {
+                        document.getElementById("ten_img_div"+i).innerHTML = '<img alt="Africneibor - '+ten_name+'" class="rounded-circle img-thumbnail" src="'+ten_img+'"  style="width:60px; height:55px">';
+                    }
+                    
+                    // Status handling
+                    if(ten_status != true){
+                        document.getElementById("ten_status_div"+i).innerHTML= '<div class="d-flex justify-content-center text-danger"> NOT VERIFIED </div>';
+                    } else {
+                        document.getElementById("ten_status_div"+i).innerHTML = '<div class="d-flex justify-content-center text-success"> <i class="bi bi-check-square-fill me-2"></i> VERIFIED </div>';
+                    }
+                    
+                    // Phone handling
+                    document.getElementById("ten_p"+i).innerHTML = ten_tel;
+                                    
+                }
+                               
+            }
+            if(!count > 0){
+                table.innerHTML += '<tr class="intro-x">'+
+                                    '<td colspan=5><div class="font-medium whitespace-nowrap">NO LANDLORD TO SHOW ON THIS PLATFORM</div></td></tr>';
+            }
+            })
+            
+        .catch(error => console.log('error', error));
+        $('#tenants_table').DataTable();
+        }
+        
+        async function get_a_tenant(tenant_id,btn){
+            btn.innerHTML="fetching info...";
+                      btn.setAttribute("disabled","");
+             var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+            };
+
+        await fetch(base_url+"/v1/user/"+tenant_id, requestOptions)
+        .then(response => response.json())
+        .then(async(result2) => {
+            
+            var user = result2.data;
+            var landlord = user.landlord;
+            
+            console.log(landlord);
+            
+                if(user.image != null){
+                    document.getElementById('userImage').src = user.image;
+                }
+                else{
+                    document.getElementById('userImage').src = "nopic.jpg";
+                }
+
+            
+            document.getElementById('fullName').textContent = `${user.firstname} ${user.middlename} ${user.lastname}`;
+            document.getElementById('email').textContent = user.email ? user.email : '---';
+            document.getElementById('phone').textContent = user.phone_no ? user.phone_no : '---';
+            document.getElementById('dob').textContent = user.dob ? user.dob : '---';
+            document.getElementById('state').textContent = user.state ? user.state : '---';
+            document.getElementById('country').textContent = user.country ? user.country : '---';
+            document.getElementById('city').textContent = user.city ? user.city : '---';
+            document.getElementById('address').textContent = user.address ? user.address : '---';
+            
+            document.getElementById('num').textContent = landlord.no_of_properties;
+            document.getElementById('bus_status').textContent = landlord.business_name ? landlord.business_name : 'Not registered';
+            
+
+            
+            if((landlord.business_name != null) && (landlord.business_website != null)){
+                document.getElementById('bus_div').innerHTML = '<p class="font-weight-bold"><strong>Business Name: </strong><span>'+ landlord.business_name +'</span></p>'+
+                                                                    '<p class="font-weight-bold"><strong>Business Country: </strong><span>'+ landlord.business_country+'</span></p>'+
+                                                                    '<p class="font-weight-bold"><strong>Business Address: </strong><span>'+ landlord.business_address+'</span></p>'+
+                                                                     '<p class="font-weight-bold"><strong>Business Contact Email: </strong><span>'+ landlord.business_email+'</span></p>'+
+                                                                     '<p class="font-weight-bold"><strong>Business Contact Number: </strong><span>'+ landlord.business_phone+'</span></p>'+
+                                                                     '<p class="font-weight-bold"><strong>Business Type: </strong><span>'+ landlord.business_type+' ownership</span></p>'+
+                                                                     '<p class="font-weight-bold"><strong>Business Website: </strong><a href="'+landlord.business+'">'+ landlord.business_website +'</a></p>'
+            }
+            else if((landlord.business_website == null)){
+                document.getElementById('bus_div').innerHTML = '<p class="font-weight-bold"><strong>Business Name: </strong><span>'+ landlord.business_name +'</span></p>'+
+                                                                    '<p class="font-weight-bold"><strong>Business Country: </strong><span>'+ landlord.business_country+'</span></p>'+
+                                                                    '<p class="font-weight-bold"><strong>Business Address: </strong><span>'+ landlord.business_address+'</span></p>'+
+                                                                     '<p class="font-weight-bold"><strong>Business Contact Email: </strong><span>'+ landlord.business_email+'</span></p>'+
+                                                                     '<p class="font-weight-bold"><strong>Business Contact Number: </strong><span>'+ landlord.business_phone+'</span></p>'+
+                                                                     '<p class="font-weight-bold"><strong>Business Type: </strong><span>'+ landlord.business_type+' ownership</span></p>'+
+                                                                     '<p class="font-weight-bold"><strong>Business Website: </strong> --- </p>'
+           
+            }
+            else if((landlord.business_name == null)){
+                document.getElementById('bus_div').innerHTML = "";
+            }
+            if(user.is_active){
+                document.getElementById('ver').style.display="block";
+                document.getElementById('notver').style.display="none";
+            }
+            else{
+                document.getElementById('ver').style.display="none";
+                document.getElementById('notver').style.display="block";
+            }
+            
+            if(landlord.is_verified){
+                document.getElementById('bus_ver').style.display="block";
+                document.getElementById('bus_notver').style.display="none";
+            }
+            else{
+                document.getElementById('bus_ver').style.display="none";
+                document.getElementById('bus_notver').style.display="block";
+            }
+            var requestOptions = {
+              method: 'GET',
+              headers: {
+                            "Authorization": `Bearer ${ADMIN_TOKEN}`,
+                            "Content-Type": "application/json"
+                          },
+              redirect: 'follow'
+            };
+            
+            await fetch(base_url+"/v1/landlord/"+user_id+"/property", requestOptions)
+              .then(response => response.text())
+              .then(result_p => {
+                  console.log(result_p);
+                  })
+              .catch(error => console.log('error', error));
+            
+             const myModal = new bootstrap.Modal(document.getElementById('userDetailsModal'));
+            myModal.show();    
+            
+            })
+            
+        .catch(error => console.log('error', error));
+        btn.innerHTML="View Tenant Details";
+        btn.removeAttribute("disabled");
+        }
+        
+        all_tenants();
+        
+        function dashboard(){
+            if(role == "landlord"){
+                window.location.href = "landlord";
+            }
+            else if(role == "tenant"){
+                window.location.href = "tenant";
+            }
+            else if(role == "admin"){
+                window.location.href = "admin";
+            }
+            else{
+                 window.location.href = "tenant";
+            }
+        }
+    </script>
+</body>
+</html>

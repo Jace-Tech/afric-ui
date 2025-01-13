@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circular Countdown Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+        .progress-circle {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(#ff6f61 calc(var(--percent, 0) * 1%), #f0f0f0 0);
+        }
+        .progress-circle-inner {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .progress-circle-inner h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: #ff6f61;
+        }
+        .time-text {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .time-text span {
+            display: block;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="countdown-container">
+    <div class="progress-circle" id="progress-circle" style="--percent: 0;">
+        <div class="progress-circle-inner">
+            <h1 id="days">0</h1>
+        </div>
+    </div>
+    <div class="time-text">
+        <span id="time">Days Remaining</span>
+        <span id="hours">00h 00m 00s</span>
+    </div>
+</div>
+
+<script>
+    function countdown() {
+        // Target date (with 1 year added)
+        var targetDate = new Date("2024-09-23T16:35:53.064+00:00");
+        targetDate.setFullYear(targetDate.getFullYear() + 1);
+
+        // Get the total time between now and the target date in seconds
+        var totalSeconds = (targetDate.getTime() - new Date().getTime()) / 1000;
+
+        // Update the countdown every 1 second
+        var interval = setInterval(function() {
+            var now = new Date().getTime();
+            var distance = targetDate - now;
+
+            // Time calculations for days, hours, minutes, and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Calculate percentage of time remaining for the progress circle
+            var remainingSeconds = distance / 1000;
+            var percent = (remainingSeconds / totalSeconds) * 100;
+
+            // Display the time
+            document.getElementById("days").innerText = days;
+            document.getElementById("hours").innerText = hours + "h " + minutes + "m " + seconds + "s";
+
+            // Update the progress circle's percentage
+            document.getElementById("progress-circle").style.setProperty('--percent', percent);
+
+            // If the countdown is over, clear the interval and display "Expired"
+            if (distance < 0) {
+                clearInterval(interval);
+                document.getElementById("days").innerText = "0";
+                document.getElementById("hours").innerText = "Countdown Expired!";
+            }
+        }, 1000);
+    }
+
+    // Call the countdown function when the page loads
+    countdown();
+</script>
+
+</body>
+</html>
