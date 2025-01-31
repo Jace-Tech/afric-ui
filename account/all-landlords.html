@@ -134,17 +134,10 @@
             "user_id": user_id
         };
         var display2 = "";
-        if (role != "admin") {
-            if (
-                (user_id == null) || (user_id.length == 0)) {
-                window.location.href = "login";
-            }
-        }
-        else {
+        
             if((admin_id == null) || (admin_id.length == 0)) {
                 window.location.href = "login";
             }
-        }
     </script>
 </head>
 
