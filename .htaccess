@@ -1,13 +1,14 @@
 RewriteEngine on
 
+# Redirect www to non-www with HTTPS
+RewriteCond %{HTTP_HOST} ^www\.africneibor\.com [NC]
+RewriteRule ^(.*)$ https://africneibor.com/$1 [R=301,L]
+
+# Redirect .php and .html files properly
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^(.*)$ $1.php
-#RewriteRule ^([a-z]+)\/?$ $1.php [NC]
-
-
+RewriteRule ^(.*)$ $1.php [L]
 
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.html -f
-RewriteRule ^(.*)$ $1.html
-#RewriteRule ^([a-z]+)\/?$ $1.html [NC]
+RewriteRule ^(.*)$ $1.html [L]
